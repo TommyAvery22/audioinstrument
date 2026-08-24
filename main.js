@@ -15,10 +15,16 @@ const key = document.getElementById('key-test');
 const synth = new Tone.Synth();
 // changed this to poly synth
 const synth = new Tone.PolySynth();
+// is the user currently holding down the key?
+let mouseButtonHeld = false;
+// if user holds down the key, set to true, then if they let it up, set to false
+window.addEventListener("mousedown", function() {
+    mouseButtonHeld = true;
+});
 
-
-
-
+window.addEventListener("mouseup", function() {
+    mouseButtonHeld = false;
+});
 
 
 ////// Dialog
@@ -79,6 +85,13 @@ function endNote(e){
 key.addEventListener("mousedown", startNote);
 key.addEventListener("mouseup", endNote)
 key.addEventListener("mouseleave", endNote)
+
+// if user is holding mouse button down when they enter the key, play the note
+key.addEventListener("mouseenter", function(e){
+    if (mouseButtonHeld == true) {
+        startNote(e);
+    }
+});
 
 //key.addEventListener("click", playDataNote);
 //testButton.addEventListener("click", playDataNote);

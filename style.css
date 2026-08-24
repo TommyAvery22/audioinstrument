@@ -39,3 +39,11 @@ dialog[open] {
 button {
     border: var(--border);
 }
+
+#key-test {
+    cursor: pointer;
+}
+
+#key-test:active {
+    background-color: red;
+}
