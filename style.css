@@ -44,6 +44,11 @@ button {
     cursor: pointer;
 }
 
+img {
+    margin: 1rem;
+    position: relative;
+}
+
 #key-test:active {
     background-color: red;
 }

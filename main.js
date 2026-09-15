@@ -95,3 +95,59 @@ key.addEventListener("mouseenter", function(e){
 
 //key.addEventListener("click", playDataNote);
 //testButton.addEventListener("click", playDataNote);
+
+oscSlider.addEventListener("change", changeOsc);
+
+// spatial control section
+const flowerPainting = document.getElementById("flower-painting");
+
+flowerPainting.addEventListener("mouseenter", startNote);
+flowerPainting.addEventListener("mouseleave", endNote);
+
+function pitchBend(e){
+    console.log(e.layerX);
+    synth.set({
+        detune: e.layerX
+    });
+}
+
+function randomTime(){
+    let trackLength = audioTrack.duration;
+    audioTrack.currentTime = trackLength * Math.random();
+}
+randomButton.addEventListener("click", randomTime);
+
+playButton.addEventListener("click", playPauseAudio);
+
+// set slider to change oscillator
+const oscSlider = document.getElementById("osc-range");
+
+function changeOsc(e){
+    console.log(e.target.value);
+    if(e.target.value > 50){
+        synth.set({
+            oscillator: {
+                type: "square"
+            }
+        })
+    } else {
+        synth.set({
+            oscillator: {
+                type: "sine"
+            }
+        })
+    }
+}
+
+oscSlider.addEventListener("change", changeOsc);
+
+flowerPainting.addEventListener("mousemove", pitchBend);
+
+// what is the current instant
+let currentInstant = Temporal.Now.instant();
+// find our time zone
+let timeZone = currentInstant.timeZoneID();
+console.log(currentInstant);
+// convert to local time
+let currentTime = currentInstant.toZonedDateTimeISO(timeZone);
+console.log(currentTime);
