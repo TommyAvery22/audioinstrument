@@ -26,7 +26,6 @@ window.addEventListener("mouseup", function() {
     mouseButtonHeld = false;
 });
 
-
 ////// Dialog
 // show dialog on page load
 introDialog.showModal();
@@ -37,10 +36,8 @@ introDialogCloseButton.addEventListener("click", function closeIntroDialog() {
 // whenever dialog closes, initialise the audio system
 introDialog.addEventListener("close", toneInit);
 
-
 // we put the whole function inside of the event listener instead as its only called there
 // function closeIntroDialog(){
-
 
 //}
 
@@ -138,6 +135,8 @@ function changeOsc(e){
         })
     }
 }
+
+
 
 oscSlider.addEventListener("change", changeOsc);
 
