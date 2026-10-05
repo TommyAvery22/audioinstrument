@@ -80,3 +80,71 @@ main {
 .player h2 {
     color: var(--player);
 }
+
+/*the drawn keyboard sits in the middle of the stage*/
+#stage {
+    display: flex;
+    justify-content: center;
+}
+
+.keyboard {
+    /*one key's width, shrinks on small screens*/
+    --key: min(8vw, 5.5rem);
+    --gap: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+
+.keyboard-row {
+    display: flex;
+    gap: var(--gap);
+}
+
+/*real keyboards shift each row a little further right*/
+.keyboard-row:nth-child(2) {
+    padding-left: calc(var(--key) * 0.35);
+}
+
+.keyboard-row:nth-child(3) {
+    padding-left: calc(var(--key) * 0.7);
+}
+
+/*a wider gap after the fifth key marks where one player's half ends*/
+.key:nth-child(5) {
+    margin-right: calc(var(--gap) * 4);
+}
+
+.key {
+    width: var(--key);
+    min-height: var(--key);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.4rem;
+    border: 0.3rem solid var(--player);
+    border-radius: 0.8rem;
+}
+
+.key kbd {
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.label {
+    font-size: 0.8rem;
+}
+
+/*control keys are dashed so they read differently from note keys*/
+.key.control {
+    border-style: dashed;
+}
+
+/*keys fill with their player's colour while pressed*/
+/*black text stays readable on both the blue and the yellow*/
+.key.held,
+.key.pressed {
+    background-color: var(--player);
+    color: black;
+}
