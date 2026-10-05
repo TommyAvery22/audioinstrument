@@ -106,8 +106,12 @@ function buildSound(){
     reverb = new Tone.Reverb({ decay: 4, wet: 0.3 });
     reverb.connect(Tone.Destination);
     players.forEach(function(player){
-        // poly synth so a player can hold more than one note at once
-        player.synth = new Tone.PolySynth(Tone.Synth, {
+        // player 1 is an frequency modulation synth, so player 2 can change how metallic it sounds
+        let voice = Tone.Synth;
+        if(player.id === "one"){
+            voice = Tone.FMSynth;
+        }
+        player.synth = new Tone.PolySynth(voice, {
             oscillator: { type: waves[player.waveIndex] },
             // turns each synth down so they don't get too loud when both players are playing
             volume: -12
@@ -117,6 +121,10 @@ function buildSound(){
         player.delay = new Tone.FeedbackDelay("8n", 0.4);
         player.delay.wet.value = player.echo;
         player.synth.chain(player.filter, player.delay, reverb);
+        
+        // player 1 starts as a pure tone until player two plays
+        // harmonicity is the ratio between the two oscillators in fm, modulation index is how strong the effect is
+        players[0].synth.set({ harmonicity: 1, modulationIndex: 0.5 });
     });
 }
 
