@@ -65,3 +65,23 @@ function keyLabel(code){
     }
     return code.replace("Key", "");
 }
+
+////// Keyboard
+// runs every time any key is pressed down
+function keyDown(e){
+    // the browser repeats keydown while a key is held, only the first one should play
+    if(e.repeat === true){
+        return;
+    }
+    // find which player owns this key
+    let found = findKey(e.code);
+    // ignore keys that don't belong to either player
+    if(found === null){
+        return;
+    }
+    // stop keys like / opening the browser's quick find
+    e.preventDefault();
+    console.log(found.player.name, found.type, found.value);
+}
+
+window.addEventListener("keydown", keyDown);
