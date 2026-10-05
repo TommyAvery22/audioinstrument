@@ -150,6 +150,10 @@ function changeControl(player, action){
     player.synth.set({ oscillator: { type: waves[player.waveIndex] } });
 }
 
+////// Turns
+// whose turn it is, player one goes first
+let currentTurn = "one";
+
 ////// Keyboard
 // runs every time any key is pressed down
 function keyDown(e){
@@ -168,6 +172,10 @@ function keyDown(e){
     // remember note keys as held until they're let go
     // note keys are remembered as held and start playing
     if(found.type === "note"){
+        // ignore notes from the player whose turn it isn't
+        if(found.player.id !== currentTurn){
+            return;
+        }
         found.player.heldKeys.add(e.code);
         startNote(found.player, found.value);
     }
