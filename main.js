@@ -34,6 +34,22 @@ const players = [
         },
         controlKeys: {
             KeyN: "darker", KeyM: "brighter", Comma: "wave", Period: "lessEcho", Slash: "moreEcho"
+        }
     }
-]; 
+];
+
+// find which player owns a key and whether it plays a note or changes a control
+function findKey(code){
+    // check each player in turn, and stop as soon as the key is found
+    for (let player of players) {
+        if(player.noteKeys[code]){
+            return { player: player, type: "note", value: player.noteKeys[code] };
+        }
+        if(player.controlKeys[code]){
+            return { player: player, type: "control", value: player.controlKeys[code] };
+        }
+    }
+    // the key doesn't belong to either player
+    return null;
+}
 
