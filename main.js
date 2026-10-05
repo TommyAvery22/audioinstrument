@@ -8,7 +8,7 @@ const introDialogCloseButton = document.getElementById('intro-dialog-close');
 // show the found element in our browser console
 // console.log(introDialog);
 // find our test button
-const testButton = document.getElementById('sound-check');
+const testButton = document.getElementById('test-button');
 // find my key button for testing
 const key = document.getElementById('key-test');
 // init our synth
@@ -46,7 +46,7 @@ introDialog.addEventListener("close", toneInit);
 
 ////// Tone
 // run to setup our audio system
-function ToneInit(){
+function toneInit(){
     synth.connect(Tone.Destination);
 }
 
