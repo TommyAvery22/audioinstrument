@@ -40,6 +40,11 @@ const players = [
     }
 ];
 
+// give every player an empty list of the note keys they're holding down
+players.forEach(function(player){
+    player.heldKeys = new Set();
+});
+
 // find which player owns a key and whether it plays a note or changes a control
 function findKey(code){
     // check each player in turn, and stop as soon as the key is found
@@ -81,7 +86,23 @@ function keyDown(e){
     }
     // stop keys like / opening the browser's quick find
     e.preventDefault();
-    console.log(found.player.name, found.type, found.value);
+        // remember note keys as held until they're let go
+    if(found.type === "note"){
+        found.player.heldKeys.add(e.code);
+    }
+    console.log(found.player.name, "holding", found.player.heldKeys);
 }
 
+// runs every time any key is let go
+function keyUp(e){
+    let found = findKey(e.code);
+    // only let go of note keys that were actually held
+    if(found === null || found.type !== "note" || found.player.heldKeys.has(e.code) === false){
+        return;
+    }
+    found.player.heldKeys.delete(e.code);
+    console.log(found.player.name, "holding", found.player.heldKeys);
+}
+
+window.addEventListener("keyup", keyUp);
 window.addEventListener("keydown", keyDown);
