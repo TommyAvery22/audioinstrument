@@ -294,3 +294,38 @@ window.addEventListener("keyup", hidePressed);
 
 buildDisplay();
 updateDisplay();
+
+////// Mouse
+// find player two's pad and the things inside it
+const pad = document.getElementById("pad");
+const padDot = document.getElementById("pad-dot");
+const padLabel = document.getElementById("pad-label");
+
+// like the flower painting from class, the mouse's position in the pad changes the sound
+function movePad(e){
+    // offsetX and offsetY are how far the mouse is from the pad's top left corner, in pixels
+    // dividing by the pad's size turns them into 0 (left or top) to 1 (right or bottom)
+    let x = e.offsetX / pad.clientWidth;
+    let y = e.offsetY / pad.clientHeight;
+
+    // move the dot to the mouse
+    padDot.style.left = (x * 100) + "%";
+    padDot.style.top = (y * 100) + "%";
+
+    if(audioReady === false){
+        return;
+    }
+    // left to right: dark to bright, from 200hz to 8000hz
+    // Math.pow makes each step sound even, because our ears hear pitch in multiples, not steps
+    players[1].cutoff = 200 * Math.pow(40, x);
+    // bottom to top: no echo to lots of echo, y is flipped because it counts down from the top
+    players[1].echo = (1 - y) * 0.8;
+
+    // player two's settings change player one's sound
+    players[0].filter.frequency.rampTo(players[1].cutoff, 0.05);
+    players[0].delay.wet.rampTo(players[1].echo, 0.05);
+
+    padLabel.textContent = "brightness " + Math.round(players[1].cutoff) + "hz · echo " + Math.round(players[1].echo * 100) + "%";
+}
+
+pad.addEventListener("mousemove", movePad);

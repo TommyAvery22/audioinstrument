@@ -172,6 +172,19 @@ main {
     background: yellow;
 }
 
+#pad-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: black;
+    border: 0.15rem solid var(--colour-02);
+    /*centre the dot on the mouse instead of its top left corner*/
+    transform: translate(-50%, -50%);
+}
+
 #pad-label {
     position: absolute;
     left: 0.75rem;
