@@ -45,6 +45,11 @@ players.forEach(function(player){
     // player 2's keys, in order, pick how metallic player 1 sounds
     // whole numbers sound like bells, half and odd numbers sound clangy
     const harmonicities = [1, 2, 3, 4, 0.5, 1.5, 2.5, 3.5, 5, 7];
+    // player 1's keys, in order, pick how fast player two's sound wobbles, in wobbles per second
+    const wobbleRates = [0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16];
+
+    // the wobbling filter on player 2's sound, made in buildSound
+    let autoFilter;
     player.heldKeys = new Set();
     // filter cutoff in hertz, lower is darker
     player.cutoff = 1200;
@@ -123,7 +128,15 @@ function buildSound(){
         player.filter = new Tone.Filter(player.cutoff, "lowpass");
         player.delay = new Tone.FeedbackDelay("8n", 0.4);
         player.delay.wet.value = player.echo;
-        player.synth.chain(player.filter, player.delay, reverb);
+                
+        if(player.id === "two"){
+            // an auto filter sweeps up and down by itself, depth 0 means no wobble until player one plays
+            autoFilter = new Tone.AutoFilter({ frequency: 2, baseFrequency: 250, octaves: 4, depth: 0 }).start();
+            // player two's sound goes: synth > wobble > filter > echo > shared reverb
+            player.synth.chain(autoFilter, player.filter, player.delay, reverb);
+        } else {
+            player.synth.chain(player.filter, player.delay, reverb);
+        }
         
         // player 1 starts as a pure tone until player two plays
         // harmonicity is the ratio between the two oscillators in fm, modulation index is how strong the effect is
@@ -134,6 +147,14 @@ function buildSound(){
 // play a note on a player's synth, and change the other player's sound
 function startNote(player, note){
     player.synth.triggerAttack(note);
+
+    if(player.id === "one"){
+        // find which of player one's keys this note is, and set how fast player two wobbles
+        let index = Object.values(player.noteKeys).indexOf(note);
+        autoFilter.frequency.rampTo(wobbleRates[index], 0.2);
+        autoFilter.depth.rampTo(1, 0.3);
+    }
+
     if(player.id === "two"){
         // find which of player 2's keys this note is, and pick a harmonicity for player 1
         let index = Object.values(player.noteKeys).indexOf(note);
@@ -147,6 +168,11 @@ function endNote(player, note){
     // player 1 goes back to a pure tone once player 2 lets go of every key
     if(player.id === "two" && player.heldKeys.size === 0){
         players[0].synth.set({ modulationIndex: 0.5 });
+    }
+
+    // player 2 stops wobbling once player one lets go of every key
+    if(player.id === "one" && player.heldKeys.size === 0){
+        autoFilter.depth.rampTo(0, 0.3);
     }
 }
 
