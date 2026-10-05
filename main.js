@@ -151,8 +151,8 @@ flowerPainting.addEventListener("mousemove", pitchBend);
 // what is the current instant
 let currentInstant = Temporal.Now.instant();
 // find our time zone
-let timeZone = currentInstant.timeZoneID();
-console.log(currentInstant);
+let timeZone = Temporal.Now.timeZoneID();
+console.log(timeZone);
 // convert to local time
 let currentTime = currentInstant.toZonedDateTimeISO(timeZone);
 console.log(currentTime);
