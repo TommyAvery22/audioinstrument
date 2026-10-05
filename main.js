@@ -317,6 +317,8 @@ function updateDisplay(){
     keys.forEach(function(key){
         let found = findKey(key.dataset.code);
         let label = key.querySelector(".label");
+        // colour the whole keyboard in the colour of whose turn it is
+        key.dataset.player = found.player.id;
         if(found.type === "note"){
             // note keys show their note
             label.textContent = found.value;
