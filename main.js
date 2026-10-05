@@ -87,6 +87,7 @@ async function toneInit(){
     // await waits for tone to finish starting before moving on
     await Tone.start();
     buildSound();
+    startClock();
     audioReady = true;
     console.log("audio ready");
 }
@@ -153,6 +154,44 @@ function changeControl(player, action){
 ////// Turns
 // whose turn it is, player one goes first
 let currentTurn = "one";
+// how many seconds each player gets per turn
+const turnLength = 6;
+// seconds left in the current turn
+let timeLeft = turnLength;
+
+// hand the turn to the other player, and stop the notes of the player whose time is up
+function switchTurn(){
+    let outgoing = players[0];
+    if(currentTurn === "two"){
+        outgoing = players[1];
+    }
+    outgoing.heldKeys.clear();
+    outgoing.synth.releaseAll();
+
+    if(currentTurn === "one"){
+        currentTurn = "two";
+    } else {
+        currentTurn = "one";
+    }
+    // the clock starts again for the next player
+    timeLeft = turnLength;
+}
+
+// count down once a second, and swap turns when the clock runs out
+function startClock(){
+    // tone's loop keeps steadier time than setInterval, because it's timed by the audio clock
+    let loop = new Tone.Loop(function(time){
+        timeLeft = timeLeft - 1;
+        if(timeLeft === 0){
+            switchTurn();
+        }
+        // update the screen at the moment the second actually passes
+        Tone.getDraw().schedule(updateDisplay, time);
+    }, 1);
+    // the first second passes one second after the clock starts
+    loop.start(1);
+    Tone.getTransport().start();
+}
 
 ////// Keyboard
 // runs every time any key is pressed down
