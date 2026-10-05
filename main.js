@@ -232,10 +232,6 @@ function keyDown(e){
     // remember note keys as held until they're let go
     // note keys are remembered as held and start playing
     if(found.type === "note"){
-        // ignore notes from the player whose turn it isn't
-        if(found.player.id !== currentTurn){
-            return;
-        }
         found.player.heldKeys.add(e.code);
         startNote(found.player, found.value);
     }
