@@ -29,14 +29,9 @@ const players = [
     {
         name: "Player 2",
         id: "two",
-        // player two plays an octave higher so the two players can hear which notes are theirs
-        noteKeys: {
-            KeyH: "C4", KeyJ: "D4", KeyK: "E4", KeyL: "G4", Semicolon: "A4",
-            KeyY: "C5", KeyU: "D5", KeyI: "E5", KeyO: "G5", KeyP: "A5"
-        },
-        controlKeys: {
-            KeyN: "darker", KeyM: "brighter", Comma: "wave", Period: "lessEcho", Slash: "moreEcho"
-        }
+        // player 2 plays with the mouse instead of the keyboard, so they have no keys
+        noteKeys: {},
+        controlKeys: {}
     }
 ];
 
@@ -220,12 +215,16 @@ function buildDisplay(){
             // find who owns this key and what it does
             let found = findKey(code);
             let key = document.createElement("div");
-            // the class is "key note" or "key control" so the css can style them differently
-            key.className = "key " + found.type;
             // data-code finds this key again when it's pressed
             key.dataset.code = code;
-            // data-player gives the key its player's colour
-            key.dataset.player = found.player.id;
+            // keys nobody owns are drawn faded
+            if(found === null){
+                key.className = "key unused";
+            } else {
+                key.className = "key " + found.type;
+                // data-player gives the key its player's colour
+                key.dataset.player = found.player.id;
+            }
 
             let letter = document.createElement("kbd");
             letter.textContent = keyLabel(code);
@@ -246,6 +245,10 @@ function updateDisplay(){
     let keys = document.querySelectorAll(".key");
     keys.forEach(function(key){
         let found = findKey(key.dataset.code);
+        // skip keys nobody owns
+        if(found === null){
+            return;
+        }
         let label = key.querySelector(".label");
         if(found.type === "note"){
             // note keys show their note

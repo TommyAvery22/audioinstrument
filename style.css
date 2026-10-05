@@ -148,3 +148,10 @@ main {
     background-color: var(--player);
     color: black;
 }
+
+/*keys nobody owns are faded out*/
+.key.unused {
+    border: 0.15rem solid var(--colour-03);
+    color: var(--colour-04);
+    opacity: 0.4;
+}
