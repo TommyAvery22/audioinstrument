@@ -6,15 +6,20 @@
     --colour-02: black;
     --colour-03: lightgray;
     --colour-04: darkgray;
+    /*each player has their own colour so they can find their part of the instrument*/
+    --player-one: #0f5cd9;
+    --player-two: #ffd500;
     --border: 0.25rem double var(--colour-03);
 }
 
 @media(prefers-color-scheme: dark) {
     :root {
-        --colour-01: white;
-        --colour-02: black;
-        --colour-03: lightgray;
-        --colour-04: darkgray;
+        --colour-01: black;
+        --colour-02: white;
+        --colour-03: darkgray;
+        --colour-04: lightgray;
+        --player-one: #0f5cd9;
+        --player-two: #ffd500;
     }
 }
 
