@@ -71,6 +71,22 @@ function keyLabel(code){
     return code.replace("Key", "");
 }
 
+////// Tone
+// keys don't make sound until the audio system is ready
+let audioReady = false;
+
+// run to setup audio system
+async function toneInit(){
+    // browsers block sound until the user clicks something, closing the dialog counts
+    // await waits for tone to finish starting before moving on
+    await Tone.start();
+    audioReady = true;
+    console.log("audio ready");
+}
+
+// whenever dialog closes, initialise the audio system
+introDialog.addEventListener("close", toneInit);
+
 ////// Keyboard
 // runs every time any key is pressed down
 function keyDown(e){
@@ -86,7 +102,7 @@ function keyDown(e){
     }
     // stop keys like / opening the browser's quick find
     e.preventDefault();
-        // remember note keys as held until they're let go
+    // remember note keys as held until they're let go
     if(found.type === "note"){
         found.player.heldKeys.add(e.code);
     }
