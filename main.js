@@ -22,8 +22,9 @@ const players = [
             KeyQ: "C4", KeyW: "D4", KeyE: "E4", KeyR: "G4", KeyT: "A4"
         },
         // bottom row changes the sound instead of playing notes
+        // player 1 only changes the wave, the tone belongs to player two
         controlKeys: {
-            KeyZ: "darker", KeyX: "brighter", KeyC: "wave", KeyV: "lessEcho", KeyB: "moreEcho"
+            KeyC: "wave"
         }
     },
     {
@@ -125,24 +126,13 @@ function endNote(player, note){
     player.synth.triggerRelease(note);
 }
 
-// change a player's sound when they press one of their bottom row keys
+// player one's wave key cycles through the oscillator shapes
 function changeControl(player, action){
-    if(action === "darker"){
-        player.cutoff = Math.max(200, player.cutoff / 1.5);
-    } else if(action === "brighter"){
-        player.cutoff = Math.min(8000, player.cutoff * 1.5);
-    } else if(action === "wave"){
+    if(action === "wave"){
         // go to the next wave, back to the start after the last one
         player.waveIndex = (player.waveIndex + 1) % waves.length;
-    } else if(action === "lessEcho"){
-        player.echo = Math.max(0, player.echo - 0.1);
-    } else if(action === "moreEcho"){
-        player.echo = Math.min(0.8, player.echo + 0.1);
+        player.synth.set({ oscillator: { type: waves[player.waveIndex] } });
     }
-    // rampTo smooths each change so it doesn't click
-    player.filter.frequency.rampTo(player.cutoff, 0.1);
-    player.delay.wet.rampTo(player.echo, 0.1);
-    player.synth.set({ oscillator: { type: waves[player.waveIndex] } });
 }
 
 ////// Keyboard
