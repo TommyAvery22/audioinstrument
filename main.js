@@ -42,6 +42,9 @@ const players = [
 
 // give every player an empty list of the note keys they're holding down
 players.forEach(function(player){
+    // player 2's keys, in order, pick how metallic player 1 sounds
+    // whole numbers sound like bells, half and odd numbers sound clangy
+    const harmonicities = [1, 2, 3, 4, 0.5, 1.5, 2.5, 3.5, 5, 7];
     player.heldKeys = new Set();
     // filter cutoff in hertz, lower is darker
     player.cutoff = 1200;
@@ -128,14 +131,23 @@ function buildSound(){
     });
 }
 
-// play a note on a player's synth
+// play a note on a player's synth, and change the other player's sound
 function startNote(player, note){
     player.synth.triggerAttack(note);
+    if(player.id === "two"){
+        // find which of player 2's keys this note is, and pick a harmonicity for player 1
+        let index = Object.values(player.noteKeys).indexOf(note);
+        players[0].synth.set({ harmonicity: harmonicities[index], modulationIndex: 12 });
+    }
 }
 
-// stop a note on a player's synth
+// stop a note on a player's synth, and let the other player's sound go back to normal
 function endNote(player, note){
     player.synth.triggerRelease(note);
+    // player 1 goes back to a pure tone once player 2 lets go of every key
+    if(player.id === "two" && player.heldKeys.size === 0){
+        players[0].synth.set({ modulationIndex: 0.5 });
+    }
 }
 
 // change a player's sound when they press one of their bottom row keys
