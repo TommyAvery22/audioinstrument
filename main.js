@@ -80,6 +80,7 @@ async function toneInit(){
     // browsers block sound until the user clicks something, closing the dialog counts
     // await waits for tone to finish starting before moving on
     await Tone.start();
+    buildSound();
     audioReady = true;
     console.log("audio ready");
 }
@@ -87,11 +88,33 @@ async function toneInit(){
 // whenever dialog closes, initialise the audio system
 introDialog.addEventListener("close", toneInit);
 
+// give each player their own synth so both can play at the same time
+function buildSound(){
+    players.forEach(function(player){
+        // poly synth so a player can hold more than one note at once
+        player.synth = new Tone.PolySynth(Tone.Synth, {
+            // turns each synth down so they don't get too loud when both players are playing
+            volume: -12
+        });
+        player.synth.connect(Tone.Destination);
+    });
+}
+
+// play a note on a player's synth
+function startNote(player, note){
+    player.synth.triggerAttack(note);
+}
+
+// stop a note on a player's synth
+function endNote(player, note){
+    player.synth.triggerRelease(note);
+}
+
 ////// Keyboard
 // runs every time any key is pressed down
 function keyDown(e){
     // the browser repeats keydown while a key is held, only the first one should play
-    if(e.repeat === true){
+    if(e.repeat === true || audioReady === false){
         return;
     }
     // find which player owns this key
@@ -103,8 +126,10 @@ function keyDown(e){
     // stop keys like / opening the browser's quick find
     e.preventDefault();
     // remember note keys as held until they're let go
+    // note keys are remembered as held and start playing
     if(found.type === "note"){
         found.player.heldKeys.add(e.code);
+        startNote(found.player, found.value);
     }
     console.log(found.player.name, "holding", found.player.heldKeys);
 }
@@ -117,7 +142,7 @@ function keyUp(e){
         return;
     }
     found.player.heldKeys.delete(e.code);
-    console.log(found.player.name, "holding", found.player.heldKeys);
+    endNote(found.player, found.value);
 }
 
 window.addEventListener("keyup", keyUp);
