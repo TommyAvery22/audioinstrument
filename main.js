@@ -43,6 +43,10 @@ const players = [
 // give every player an empty list of the note keys they're holding down
 players.forEach(function(player){
     player.heldKeys = new Set();
+    // filter cutoff in hertz, lower is darker
+    player.cutoff = 1200;
+    // how much echo, from 0 to 1
+    player.echo = 0.2;
 });
 
 // find which player owns a key and whether it plays a note or changes a control
@@ -88,15 +92,25 @@ async function toneInit(){
 // whenever dialog closes, initialise the audio system
 introDialog.addEventListener("close", toneInit);
 
+// the shared reverb, made in buildSound
+let reverb;
+
 // give each player their own synth so both can play at the same time
 function buildSound(){
+    // both players share the same reverb
+    reverb = new Tone.Reverb({ decay: 4, wet: 0.3 });
+    reverb.connect(Tone.Destination);
     players.forEach(function(player){
         // poly synth so a player can hold more than one note at once
         player.synth = new Tone.PolySynth(Tone.Synth, {
             // turns each synth down so they don't get too loud when both players are playing
             volume: -12
         });
-        player.synth.connect(Tone.Destination);
+        // each player's sound goes: synth > filter > echo > shared reverb
+        player.filter = new Tone.Filter(player.cutoff, "lowpass");
+        player.delay = new Tone.FeedbackDelay("8n", 0.4);
+        player.delay.wet.value = player.echo;
+        player.synth.chain(player.filter, player.delay, reverb);
     });
 }
 
