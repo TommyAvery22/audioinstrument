@@ -250,12 +250,32 @@ function updateDisplay(){
         if(found.type === "note"){
             // note keys show their note
             label.textContent = found.value;
+            // light up note keys while they're held
+            key.classList.toggle("held", found.player.heldKeys.has(key.dataset.code));
         } else {
             // control keys show what they change
             label.textContent = controlNames[found.value];
         }
     });
 }
+
+// only light up keys while they're held, don't change the display when a control key is pressed
+function showPressed(e){
+    let key = document.querySelector('.control[data-code="' + e.code + '"]');
+    if(key !== null){
+        key.classList.add("pressed");
+    }
+}
+
+function hidePressed(e){
+    let key = document.querySelector('.control[data-code="' + e.code + '"]');
+    if(key !== null){
+        key.classList.remove("pressed");
+    }
+}
+
+window.addEventListener("keydown", showPressed);
+window.addEventListener("keyup", hidePressed);
 
 buildDisplay();
 updateDisplay();

@@ -140,3 +140,11 @@ main {
 .key.control {
     border-style: dashed;
 }
+
+/*keys fill with their player's colour while pressed*/
+/*black text stays readable on both the blue and the yellow*/
+.key.held,
+.key.pressed {
+    background-color: var(--player);
+    color: black;
+}
