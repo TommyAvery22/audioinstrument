@@ -16,10 +16,12 @@ const players = [
     {
         name: "Player 1",
         id: "one",
-        // home row plays low notes, the row above plays the same notes an octave up
+        // home row plays C3 up to A4, the row above is the same notes an octave up
         noteKeys: {
             KeyA: "C3", KeyS: "D3", KeyD: "E3", KeyF: "G3", KeyG: "A3",
-            KeyQ: "C4", KeyW: "D4", KeyE: "E4", KeyR: "G4", KeyT: "A4"
+            KeyH: "C4", KeyJ: "D4", KeyK: "E4", KeyL: "G4", Semicolon: "A4",
+            KeyQ: "C4", KeyW: "D4", KeyE: "E4", KeyR: "G4", KeyT: "A4",
+            KeyY: "C5", KeyU: "D5", KeyI: "E5", KeyO: "G5", KeyP: "A5"
         },
         // bottom row changes the sound instead of playing notes
         // player 1 only changes the wave, the tone belongs to player two
