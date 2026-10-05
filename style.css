@@ -169,6 +169,7 @@ main {
     aspect-ratio: 1;
     border: 0.3rem solid var(--player);
     border-radius: 0.8rem;
+    color: black;
     background: yellow;
 }
 
@@ -188,7 +189,7 @@ main {
 #pad-label {
     position: absolute;
     left: 0.75rem;
-    bottom: 0.5rem;
+    top: 0.5rem;
     font-size: 0.8rem;
 }
 
@@ -196,4 +197,26 @@ main {
 #pad-dot,
 #pad-label {
     pointer-events: none;
+}
+
+/*axis labels sit along the bottom and left edges of the pad*/
+.pad-axis {
+    position: absolute;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.x-axis {
+    bottom: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/*rotated so it reads bottom to top, the same way echo increases*/
+.y-axis {
+    left: 1rem;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
 }

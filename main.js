@@ -237,7 +237,15 @@ function buildDisplay(){
     let padLabel = document.createElement("p");
     padLabel.id = "pad-label";
     padLabel.textContent = "player 2's control box";
-    pad.append(dot, padLabel);
+    // axis labels show what moving in each direction does
+    let xAxis = document.createElement("p");
+    xAxis.className = "pad-axis x-axis";
+    xAxis.textContent = "← darker · brighter →";
+    let yAxis = document.createElement("p");
+    yAxis.className = "pad-axis y-axis";
+    yAxis.textContent = "← less echo · more echo →";
+    pad.append(dot, padLabel, xAxis, yAxis);
+
     stage.append(pad);
 }
 
