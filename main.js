@@ -25,6 +25,8 @@ const players = [
         controlKeys: {
             KeyZ: "darker", KeyX: "brighter", KeyC: "wave", KeyV: "lessEcho", KeyB: "moreEcho"
         }
+    },
+    {
         name: "Player Two",
         id: "two",
         // player two plays an octave higher so the two players can hear which notes are theirs
