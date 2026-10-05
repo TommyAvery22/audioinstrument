@@ -47,6 +47,8 @@ players.forEach(function(player){
     player.cutoff = 1200;
     // how much echo, from 0 to 1
     player.echo = 0.2;
+    // position in the waves list
+    player.waveIndex = 0;
 });
 
 // find which player owns a key and whether it plays a note or changes a control
@@ -95,6 +97,9 @@ introDialog.addEventListener("close", toneInit);
 // the shared reverb, made in buildSound
 let reverb;
 
+// oscillator shapes a player can cycle through
+const waves = ["triangle", "square", "sawtooth", "sine"];
+
 // give each player their own synth so both can play at the same time
 function buildSound(){
     // both players share the same reverb
@@ -103,6 +108,7 @@ function buildSound(){
     players.forEach(function(player){
         // poly synth so a player can hold more than one note at once
         player.synth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: waves[player.waveIndex] },
             // turns each synth down so they don't get too loud when both players are playing
             volume: -12
         });
@@ -122,6 +128,26 @@ function startNote(player, note){
 // stop a note on a player's synth
 function endNote(player, note){
     player.synth.triggerRelease(note);
+}
+
+// change a player's sound when they press one of their bottom row keys
+function changeControl(player, action){
+    if(action === "darker"){
+        player.cutoff = Math.max(200, player.cutoff / 1.5);
+    } else if(action === "brighter"){
+        player.cutoff = Math.min(8000, player.cutoff * 1.5);
+    } else if(action === "wave"){
+        // go to the next wave, back to the start after the last one
+        player.waveIndex = (player.waveIndex + 1) % waves.length;
+    } else if(action === "lessEcho"){
+        player.echo = Math.max(0, player.echo - 0.1);
+    } else if(action === "moreEcho"){
+        player.echo = Math.min(0.8, player.echo + 0.1);
+    }
+    // rampTo smooths each change so it doesn't click
+    player.filter.frequency.rampTo(player.cutoff, 0.1);
+    player.delay.wet.rampTo(player.echo, 0.1);
+    player.synth.set({ oscillator: { type: waves[player.waveIndex] } });
 }
 
 ////// Keyboard
@@ -144,6 +170,10 @@ function keyDown(e){
     if(found.type === "note"){
         found.player.heldKeys.add(e.code);
         startNote(found.player, found.value);
+    }
+    // control keys change the sound instead
+    if(found.type === "control"){
+        changeControl(found.player, found.value);
     }
     console.log(found.player.name, "holding", found.player.heldKeys);
 }
