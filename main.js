@@ -40,19 +40,19 @@ const players = [
     }
 ];
 
-// give every player an empty list of the note keys they're holding down
-players.forEach(function(player){
-    // player 2's keys, in order, pick how metallic player 1 sounds
+// player 2's keys, in order, pick how metallic player 1 sounds
     // whole numbers sound like bells, half and odd numbers sound clangy
     const harmonicities = [1, 2, 3, 4, 0.5, 1.5, 2.5, 3.5, 5, 7];
     // player 1's keys, in order, pick how fast player two's sound wobbles, in wobbles per second
     const wobbleRates = [0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16];
-
     // the wobbling filter on player 2's sound, made in buildSound
     let autoFilter;
+
+// give every player an empty list of the note keys they're holding down
+players.forEach(function(player){
     player.heldKeys = new Set();
     // filter cutoff in hertz, lower is darker
-    player.cutoff = 1200;
+    player.cutoff = 1400;
     // how much echo, from 0 to 1
     player.echo = 0.2;
     // position in the waves list
