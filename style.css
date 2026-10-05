@@ -7,7 +7,7 @@
     --colour-03: lightgray;
     --colour-04: darkgray;
     /*each player has their own colour so they can find their part of the instrument*/
-    --player-one: #0f5cd9;
+    --player-one: #ea15f5;
     --player-two: #ffd500;
     --border: 0.25rem double var(--colour-03);
 }

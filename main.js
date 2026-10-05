@@ -14,7 +14,7 @@ introDialogCloseButton.addEventListener("click", function closeIntroDialog() {
 ////// Players
 const players = [
     {
-        name: "Player One",
+        name: "Player 1",
         id: "one",
         // home row plays low notes, the row above plays the same notes an octave up
         noteKeys: {
@@ -27,7 +27,7 @@ const players = [
         }
     },
     {
-        name: "Player Two",
+        name: "Player 2",
         id: "two",
         // player two plays an octave higher so the two players can hear which notes are theirs
         noteKeys: {
@@ -191,3 +191,28 @@ function keyUp(e){
 
 window.addEventListener("keyup", keyUp);
 window.addEventListener("keydown", keyDown);
+
+////// Display
+// find the empty stage in the html
+const stage = document.getElementById("stage");
+
+// make a section for each player with their name and a line of status text
+function buildDisplay(){
+    players.forEach(function(player){
+        let section = document.createElement("section");
+        section.className = "player";
+        // data-player picks up the player's colour from the css
+        section.dataset.player = player.id;
+
+        let heading = document.createElement("h2");
+        heading.textContent = player.name;
+        let status = document.createElement("p");
+
+        section.append(heading, status);
+        stage.append(section);
+        // remember the status line so it can be updated later
+        player.statusElement = status;
+    });
+}
+
+buildDisplay();
