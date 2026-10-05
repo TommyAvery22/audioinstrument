@@ -24,7 +24,7 @@
 }
 
 body {
-    font-family: "Work Sans", sans-serif;
+    font-family: "helvetica", "arial", sans-serif;
     background-color: var(--colour-01);
     color: var(--colour-02);
 }
@@ -45,15 +45,38 @@ button {
     border: var(--border);
 }
 
-#key-test {
-    cursor: pointer;
+header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    padding: 1rem 1.5rem;
 }
 
-img {
-    margin: 1rem;
-    position: relative;
+#prototype-name {
+    color: var(--colour-04);
 }
 
-#key-test:active {
-    background-color: red;
+main {
+    padding: 1.5rem;
+}
+
+/*each player's elements pick up their colour through --player*/
+[data-player="one"] {
+    --player: var(--player-one);
+}
+
+[data-player="two"] {
+    --player: var(--player-two);
+}
+
+.player {
+    border-left: 0.5rem solid var(--player);
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.player h2 {
+    color: var(--player);
 }
