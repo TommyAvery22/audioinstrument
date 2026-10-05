@@ -263,54 +263,89 @@ const stage = document.getElementById("stage");
 // find the countdown clock
 const clock = document.getElementById("clock");
 
-// make a section for each player with their name and a line of status text
+// the three letter rows of a qwerty keyboard, top to bottom
+const keyboardRows = [
+    ["KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP"],
+    ["KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon"],
+    ["KeyZ", "KeyX", "KeyC", "KeyV", "KeyB", "KeyN", "KeyM", "Comma", "Period", "Slash"]
+];
+
+// readable names for the control keys
+const controlNames = { darker: "darker", brighter: "brighter", wave: "change wave", lessEcho: "less echo", moreEcho: "more echo" };
+
+// draw the keyboard on screen, each key coloured by the player who owns it
 function buildDisplay(){
-    players.forEach(function(player){
-        let section = document.createElement("section");
-        section.className = "player";
-        // data-player picks up the player's colour from the css
-        section.dataset.player = player.id;
+    let keyboard = document.createElement("div");
+    keyboard.className = "keyboard";
 
-        let heading = document.createElement("h2");
-        heading.textContent = player.name;
-        let status = document.createElement("p");
+    keyboardRows.forEach(function(codes){
+        let row = document.createElement("div");
+        row.className = "keyboard-row";
 
-        section.append(heading, status);
-        stage.append(section);
-        // remember the status line so it can be updated later
-        player.statusElement = status;
+        codes.forEach(function(code){
+            // find who owns this key and what it does
+            let found = findKey(code);
+            let key = document.createElement("div");
+            // the class is "key note" or "key control" so the css can style them differently
+            key.className = "key " + found.type;
+            // data-code finds this key again when it's pressed
+            key.dataset.code = code;
+            // data-player gives the key its player's colour
+            key.dataset.player = found.player.id;
+
+            let letter = document.createElement("kbd");
+            letter.textContent = keyLabel(code);
+            let label = document.createElement("span");
+            label.className = "label";
+
+            key.append(letter, label);
+            row.append(key);
+        });
+        keyboard.append(row);
     });
+    stage.append(keyboard);
 }
 
-// write what each player is playing and how their sound is set
+// write what each key does on it
 function updateDisplay(){
     // show the seconds left, in the colour of whose turn it is
     clock.textContent = timeLeft;
     clock.dataset.player = currentTurn;
 
-    players.forEach(function(player){
-        // turn the held keys into a list of notes
-        let notes = [];
-        player.heldKeys.forEach(function(code){
-            notes.push(player.noteKeys[code]);
-        });
-        let playing = "nothing";
-        if(notes.length > 0){
-            playing = notes.join(" ");
+    // find every key on the drawn keyboard
+    let keys = document.querySelectorAll(".key");
+    keys.forEach(function(key){
+        let found = findKey(key.dataset.code);
+        let label = key.querySelector(".label");
+        if(found.type === "note"){
+            // note keys show their note
+            label.textContent = found.value;
+            // light up note keys while they're held
+            key.classList.toggle("held", found.player.heldKeys.has(key.dataset.code));
+        } else {
+            // control keys show what they change
+            label.textContent = controlNames[found.value];
         }
-        // say whose turn it is
-        let turn = "waiting";
-        if(currentTurn === player.id){
-            turn = "your turn";
-        }
-        player.statusElement.textContent =
-            turn +
-            " · playing: " + playing +
-            " · wave: " + waves[player.waveIndex] +
-            " · brightness: " + Math.round(player.cutoff) + "hz" +
-            " · echo: " + Math.round(player.echo * 100) + "%";
     });
 }
+
+// only light up keys while they're held, don't change the display when a control key is pressed
+function showPressed(e){
+    let key = document.querySelector('.control[data-code="' + e.code + '"]');
+    if(key !== null){
+        key.classList.add("pressed");
+    }
+}
+
+function hidePressed(e){
+    let key = document.querySelector('.control[data-code="' + e.code + '"]');
+    if(key !== null){
+        key.classList.remove("pressed");
+    }
+}
+
+window.addEventListener("keydown", showPressed);
+window.addEventListener("keyup", hidePressed);
 
 buildDisplay();
 updateDisplay();
