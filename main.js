@@ -260,6 +260,8 @@ window.addEventListener("keydown", keyDown);
 ////// Display
 // find the empty stage in the html
 const stage = document.getElementById("stage");
+// find the countdown clock
+const clock = document.getElementById("clock");
 
 // make a section for each player with their name and a line of status text
 function buildDisplay(){
@@ -282,6 +284,10 @@ function buildDisplay(){
 
 // write what each player is playing and how their sound is set
 function updateDisplay(){
+    // show the seconds left, in the colour of whose turn it is
+    clock.textContent = timeLeft;
+    clock.dataset.player = currentTurn;
+
     players.forEach(function(player){
         // turn the held keys into a list of notes
         let notes = [];
@@ -292,8 +298,14 @@ function updateDisplay(){
         if(notes.length > 0){
             playing = notes.join(" ");
         }
+        // say whose turn it is
+        let turn = "waiting";
+        if(currentTurn === player.id){
+            turn = "your turn";
+        }
         player.statusElement.textContent =
-            "playing: " + playing +
+            turn +
+            " · playing: " + playing +
             " · wave: " + waves[player.waveIndex] +
             " · brightness: " + Math.round(player.cutoff) + "hz" +
             " · echo: " + Math.round(player.echo * 100) + "%";

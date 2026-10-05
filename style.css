@@ -80,3 +80,11 @@ main {
 .player h2 {
     color: var(--player);
 }
+
+/*the countdown, in the colour of the player whose turn it is*/
+#clock {
+    font-size: 6rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--player);
+}
