@@ -175,7 +175,7 @@ function keyDown(e){
     if(found.type === "control"){
         changeControl(found.player, found.value);
     }
-    console.log(found.player.name, "holding", found.player.heldKeys);
+    updateDisplay();
 }
 
 // runs every time any key is let go
@@ -187,6 +187,7 @@ function keyUp(e){
     }
     found.player.heldKeys.delete(e.code);
     endNote(found.player, found.value);
+    updateDisplay();
 }
 
 window.addEventListener("keyup", keyUp);
@@ -215,4 +216,25 @@ function buildDisplay(){
     });
 }
 
+// write what each player is playing and how their sound is set
+function updateDisplay(){
+    players.forEach(function(player){
+        // turn the held keys into a list of notes
+        let notes = [];
+        player.heldKeys.forEach(function(code){
+            notes.push(player.noteKeys[code]);
+        });
+        let playing = "nothing";
+        if(notes.length > 0){
+            playing = notes.join(" ");
+        }
+        player.statusElement.textContent =
+            "playing: " + playing +
+            " · wave: " + waves[player.waveIndex] +
+            " · brightness: " + Math.round(player.cutoff) + "hz" +
+            " · echo: " + Math.round(player.echo * 100) + "%";
+    });
+}
+
 buildDisplay();
+updateDisplay();
