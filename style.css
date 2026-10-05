@@ -155,3 +155,32 @@ main {
     color: var(--colour-04);
     opacity: 0.4;
 }
+
+#stage {
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/*player 2's pad gets brighter to the right, hinting at what moving does*/
+#pad {
+    position: relative;
+    width: min(40vw, 22rem);
+    aspect-ratio: 1;
+    border: 0.3rem solid var(--player);
+    border-radius: 0.8rem;
+    background: yellow;
+}
+
+#pad-label {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.5rem;
+    font-size: 0.8rem;
+}
+
+/*the dot and label ignore the mouse, so the pad always gets the mousemove*/
+#pad-dot,
+#pad-label {
+    pointer-events: none;
+}

@@ -237,6 +237,18 @@ function buildDisplay(){
         keyboard.append(row);
     });
     stage.append(keyboard);
+    // player 2's pad, they move the mouse around inside it to shape the sound
+    let pad = document.createElement("div");
+    pad.id = "pad";
+    pad.dataset.player = "two";
+    // the dot shows where player two's mouse is
+    let dot = document.createElement("div");
+    dot.id = "pad-dot";
+    let padLabel = document.createElement("p");
+    padLabel.id = "pad-label";
+    padLabel.textContent = "player 2's control box";
+    pad.append(dot, padLabel);
+    stage.append(pad);
 }
 
 // write what each key does on it
