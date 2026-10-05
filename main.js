@@ -12,11 +12,11 @@ const testButton = document.getElementById('sound-check');
 // find my key button for testing
 const key = document.getElementById('key-test');
 // init our synth
-const synth = new Tone.Synth();
 // changed this to poly synth
 const synth = new Tone.PolySynth();
 // is the user currently holding down the key?
 let mouseButtonHeld = false;
+
 // if user holds down the key, set to true, then if they let it up, set to false
 window.addEventListener("mousedown", function() {
     mouseButtonHeld = true;
@@ -25,6 +25,9 @@ window.addEventListener("mousedown", function() {
 window.addEventListener("mouseup", function() {
     mouseButtonHeld = false;
 });
+
+// introdialog.showModal();
+// document.body.style.backgroundColor = "red";
 
 ////// Dialog
 // show dialog on page load
@@ -62,7 +65,7 @@ function playDataNote(e){
     //console.log(buttonClicked)
     let note = buttonClicked.dataset.note;
     //console.log(note);
-    synth.triggerAttackRelease("d4", "8n");
+    synth.triggerAttackRelease(note, "8n");
 }
 
 function startNote(e){
@@ -82,7 +85,6 @@ function endNote(e){
 key.addEventListener("mousedown", startNote);
 key.addEventListener("mouseup", endNote)
 key.addEventListener("mouseleave", endNote)
-
 // if user is holding mouse button down when they enter the key, play the note
 key.addEventListener("mouseenter", function(e){
     if (mouseButtonHeld == true) {
@@ -93,19 +95,18 @@ key.addEventListener("mouseenter", function(e){
 //key.addEventListener("click", playDataNote);
 //testButton.addEventListener("click", playDataNote);
 
-oscSlider.addEventListener("change", changeOsc);
+// when I click the button i want to play audio file
+const playButton = document.getElementById("play-button");
+const randomButton = document.getElementById("random-button");
+const audioTrack = document.getElementById("audio-track");
 
-// spatial control section
-const flowerPainting = document.getElementById("flower-painting");
-
-flowerPainting.addEventListener("mouseenter", startNote);
-flowerPainting.addEventListener("mouseleave", endNote);
-
-function pitchBend(e){
-    console.log(e.layerX);
-    synth.set({
-        detune: e.layerX
-    });
+// if audio is currently paused, play it, if its playing, pause it
+function playPauseAudio(){
+    if(audioTrack.paused == true){
+        audioTrack.play();
+    } else {
+        audioTrack.pause();
+    }
 }
 
 function randomTime(){
@@ -124,21 +125,26 @@ function changeOsc(e){
     if(e.target.value > 50){
         synth.set({
             oscillator: {
-                type: "square"
-            }
-        })
-    } else {
-        synth.set({
-            oscillator: {
                 type: "sine"
             }
         })
     }
 }
 
-
-
 oscSlider.addEventListener("change", changeOsc);
+
+// spatial control section
+const flowerPainting = document.getElementById("flower-painting");
+
+flowerPainting.addEventListener("mouseenter", startNote);
+flowerPainting.addEventListener("mouseleave", endNote);
+
+function pitchBend(e){
+    console.log(e.layerX);
+    synth.set({
+        detune: e.layerX
+    });
+}
 
 flowerPainting.addEventListener("mousemove", pitchBend);
 
@@ -150,3 +156,10 @@ console.log(currentInstant);
 // convert to local time
 let currentTime = currentInstant.toZonedDateTimeISO(timeZone);
 console.log(currentTime);
+// convert to plain time
+let plainTime = Temporal.PlainTime.from(currentTime);
+console.log(plainTime.minute);
+
+if(plainTime.minute > 52){
+    audioTrack.playbackRate = 0.5;
+}
