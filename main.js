@@ -53,3 +53,13 @@ function findKey(code){
     return null;
 }
 
+// keys that aren't letters, and the character printed on them
+const symbolLabels = { Semicolon: ";", Comma: ",", Period: ".", Slash: "/" };
+
+// turn e.code into the character printed on the key, or the letter if it's a letter key
+function keyLabel(code){
+    if(symbolLabels[code]){
+        return symbolLabels[code];
+    }
+    return code.replace("Key", "");
+}
