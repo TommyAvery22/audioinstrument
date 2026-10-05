@@ -12,31 +12,33 @@ introDialogCloseButton.addEventListener("click", function closeIntroDialog() {
 });
 
 ////// Players
+// during their turn, each player gets the whole keyboard
+// home row plays C3 up to A4, the row above is the same notes an octave up
+const wholeKeyboardNotes = {
+    KeyA: "C3", KeyS: "D3", KeyD: "E3", KeyF: "G3", KeyG: "A3",
+    KeyH: "C4", KeyJ: "D4", KeyK: "E4", KeyL: "G4", Semicolon: "A4",
+    KeyQ: "C4", KeyW: "D4", KeyE: "E4", KeyR: "G4", KeyT: "A4",
+    KeyY: "C5", KeyU: "D5", KeyI: "E5", KeyO: "G5", KeyP: "A5"
+};
+// bottom row changes the sound, the same controls on both halves so either hand can reach them
+const wholeKeyboardControls = {
+    KeyZ: "darker", KeyX: "brighter", KeyC: "wave", KeyV: "lessEcho", KeyB: "moreEcho",
+    KeyN: "darker", KeyM: "brighter", Comma: "wave", Period: "lessEcho", Slash: "moreEcho"
+};
+
+// both players share the same keys, but each keeps their own sound settings
 const players = [
     {
         name: "Player 1",
         id: "one",
-        // home row plays low notes, the row above plays the same notes an octave up
-        noteKeys: {
-            KeyA: "C3", KeyS: "D3", KeyD: "E3", KeyF: "G3", KeyG: "A3",
-            KeyQ: "C4", KeyW: "D4", KeyE: "E4", KeyR: "G4", KeyT: "A4"
-        },
-        // bottom row changes the sound instead of playing notes
-        controlKeys: {
-            KeyZ: "darker", KeyX: "brighter", KeyC: "wave", KeyV: "lessEcho", KeyB: "moreEcho"
-        }
+        noteKeys: wholeKeyboardNotes,
+        controlKeys: wholeKeyboardControls
     },
     {
         name: "Player 2",
         id: "two",
-        // player two plays an octave higher so the two players can hear which notes are theirs
-        noteKeys: {
-            KeyH: "C4", KeyJ: "D4", KeyK: "E4", KeyL: "G4", Semicolon: "A4",
-            KeyY: "C5", KeyU: "D5", KeyI: "E5", KeyO: "G5", KeyP: "A5"
-        },
-        controlKeys: {
-            KeyN: "darker", KeyM: "brighter", Comma: "wave", Period: "lessEcho", Slash: "moreEcho"
-        }
+        noteKeys: wholeKeyboardNotes,
+        controlKeys: wholeKeyboardControls
     }
 ];
 
@@ -51,18 +53,20 @@ players.forEach(function(player){
     player.waveIndex = 0;
 });
 
-// find which player owns a key and whether it plays a note or changes a control
+// find what a key does, the whole keyboard belongs to whoever's turn it is
 function findKey(code){
-    // check each player in turn, and stop as soon as the key is found
-    for (let player of players) {
-        if(player.noteKeys[code]){
-            return { player: player, type: "note", value: player.noteKeys[code] };
-        }
-        if(player.controlKeys[code]){
-            return { player: player, type: "control", value: player.controlKeys[code] };
-        }
+    // find the player whose turn it is
+    let player = players[0];
+    if(currentTurn === "two"){
+        player = players[1];
     }
-    // the key doesn't belong to either player
+    if(player.noteKeys[code]){
+        return { player: player, type: "note", value: player.noteKeys[code] };
+    }
+    if(player.controlKeys[code]){
+        return { player: player, type: "control", value: player.controlKeys[code] };
+    }
+    // the key isn't part of the instrument
     return null;
 }
 
