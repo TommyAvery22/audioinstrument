@@ -327,6 +327,10 @@ function updateDisplay(){
             label.textContent = found.value;
             // light up note keys while they're held
             key.classList.toggle("held", found.player.heldKeys.has(key.dataset.code));
+            // remember who played this key, so its trail stays in their colour
+            if(found.player.heldKeys.has(key.dataset.code)){
+                key.style.setProperty("--fill", "var(--player-" + found.player.id + ")");
+            }
         } else {
             // control keys show what they change
             label.textContent = controlNames[found.value];

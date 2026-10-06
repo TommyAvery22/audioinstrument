@@ -157,3 +157,8 @@ main {
     /*filling up happens instantly, only the fading out is slow*/
     transition: none;
 }
+
+/*held notes use the colour of whoever pressed them, so the trail keeps that colour as it fades*/
+.key.held {
+    background-color: var(--fill, var(--player));
+}
