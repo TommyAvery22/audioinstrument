@@ -311,6 +311,19 @@ function updateDisplay(){
     // show the seconds left, in the colour of whose turn it is
     clock.textContent = timeLeft;
     clock.dataset.player = currentTurn;
+    
+    // the background blends from the current player's colour into the next player's as their time runs out
+    let current = "player-one";
+    let next = "player-two";
+    if(currentTurn === "two"){
+        current = "player-two";
+        next = "player-one";
+    }
+    // how much of the turn is left, from 100% at the start down to 17% in the last second
+    let percentLeft = Math.round(timeLeft / turnLength * 100);
+    let blend = "color-mix(in srgb, var(--" + current + ") " + percentLeft + "%, var(--" + next + "))";
+    // mix that with the normal background so the keys are still easy to see
+    document.body.style.backgroundColor = "color-mix(in srgb, " + blend + " 40%, var(--colour-01))";
 
     // find every key on the drawn keyboard
     let keys = document.querySelectorAll(".key");
