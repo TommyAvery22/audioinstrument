@@ -130,7 +130,7 @@ main {
     border: 0.3rem solid var(--player);
     border-radius: 0.8rem;
     /*when a key is let go its colour drains away slowly, like the sound fading out*/
-    transition: background-color 1.5s ease-out;
+    transition: background-color var(--trail, 1.5s) ease-out;
 }
 
 .key kbd {

@@ -319,6 +319,9 @@ function updateDisplay(){
         let label = key.querySelector(".label");
         // colour the whole keyboard in the colour of whose turn it is
         key.dataset.player = found.player.id;
+        // the trail lasts longer the more echo the player has, from 1 to 4 seconds
+        let trail = 1 + found.player.echo * 4;
+        key.style.setProperty("--trail", trail + "s");
         if(found.type === "note"){
             // note keys show their note
             label.textContent = found.value;
