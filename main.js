@@ -260,8 +260,7 @@ window.addEventListener("keydown", keyDown);
 ////// Display
 // find the empty stage in the html
 const stage = document.getElementById("stage");
-// find the countdown clock
-const clock = document.getElementById("clock");
+
 
 // the three letter rows of a qwerty keyboard, top to bottom
 const keyboardRows = [
