@@ -129,6 +129,8 @@ main {
     padding: 0.4rem;
     border: 0.3rem solid var(--player);
     border-radius: 0.8rem;
+    /*when a key is let go its colour drains away slowly, like the sound fading out*/
+    transition: background-color 1.5s ease-out;
 }
 
 .key kbd {
@@ -152,4 +154,6 @@ main {
 .key.pressed {
     background-color: var(--player);
     color: black;
+    /*filling up happens instantly, only the fading out is slow*/
+    transition: none;
 }
