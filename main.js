@@ -181,30 +181,14 @@ function switchTurn(){
     timeLeft = turnLength;
 }
 
-// the metronome sound, made in startClock
-let tick;
-
 // count down once a second, and swap turns when the clock runs out
 function startClock(){
-    // a short high click, like a metronome
-    tick = new Tone.Synth({
-        oscillator: { type: "triangle" },
-        envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.05 },
-        volume: -10
-    });
-    tick.connect(Tone.Destination);
-    // a higher tick marks the start of the first turn
-    tick.triggerAttackRelease("G6", "32n");
 
     // tone's loop keeps steadier time than setInterval, because it's timed by the audio clock
     let loop = new Tone.Loop(function(time){
         timeLeft = timeLeft - 1;
         if(timeLeft === 0){
             switchTurn();
-            // a higher tick marks the start of a new turn
-            tick.triggerAttackRelease("G6", "32n", time);
-        } else {
-            tick.triggerAttackRelease("C6", "32n", time);
         }
         // update the screen at the moment the second actually passes
         Tone.getDraw().schedule(updateDisplay, time);
