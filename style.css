@@ -27,6 +27,8 @@ body {
     font-family: "helvetica", "arial", sans-serif;
     background-color: var(--colour-01);
     color: var(--colour-02);
+    /*glide between each second's colour instead of jumping*/
+    transition: background-color 1s linear;
 }
 
 dialog[open] {
@@ -129,6 +131,8 @@ main {
     padding: 0.4rem;
     border: 0.3rem solid var(--player);
     border-radius: 0.8rem;
+    /*keys keep a plain background so they stand out from the tinted page*/
+    background-color: var(--colour-01);
 }
 
 .key kbd {
