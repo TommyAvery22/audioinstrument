@@ -109,8 +109,9 @@ main {
 }
 
 .keyboard {
-    /*one key's width, shrinks on small screens*/
-    --key: min(8vw, 5.5rem);
+    /*one key's width: grows and shrinks with the screen so the whole keyboard always fits,
+    but never smaller than 2.6rem or bigger than 7rem*/
+    --key: clamp(2.6rem, (100vw - 12rem) / 11, 7rem);
     --gap: 0.5rem;
     display: flex;
     flex-direction: column;
@@ -376,4 +377,62 @@ main {
     height: 2rem;
     padding: 0;
     border-radius: 50%;
+}
+
+/*responsive layout for the four laptop and desktop sizes*/
+/*the keys already scale with the screen width, these change the text size and spacing to suit each size*/
+
+/*medium: narrower than 840px, smaller text and tighter spacing so everything fits without scrolling sideways*/
+@media (max-width: 839px) {
+    html {
+        font-size: 14px;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    #stage {
+        padding-top: 1.5rem;
+    }
+
+    .instrument {
+        gap: 2rem;
+    }
+
+    .meters {
+        gap: 1rem;
+    }
+
+    .keyboard {
+        --gap: 0.3rem;
+    }
+}
+
+/*expanded: 840px to 1199px, slightly smaller text and spacing*/
+@media (min-width: 840px) and (max-width: 1199px) {
+    html {
+        font-size: 15px;
+    }
+
+    .keyboard {
+        --gap: 0.4rem;
+    }
+}
+
+/*large: 1200px to 1600px uses the default sizes set above*/
+
+/*extra-large: wider than 1600px, bigger text, keys and spacing so the instrument fills the screen*/
+@media (min-width: 1601px) {
+    html {
+        font-size: 18px;
+    }
+
+    #stage {
+        padding-top: 4rem;
+    }
+
+    .keyboard {
+        --gap: 0.6rem;
+    }
 }
