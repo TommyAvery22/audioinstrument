@@ -342,3 +342,17 @@ main {
     font-size: 0.75rem;
     text-align: right;
 }
+
+/*while wobbling, the dot slides to one end of the track and back once per wobble*/
+.meter-dot.wobbling {
+    animation: wobble calc(var(--wobble-time) / 2) ease-in-out infinite alternate;
+}
+
+@keyframes wobble {
+    from {
+        left: 0.4rem;
+    }
+    to {
+        left: calc(100% - 0.4rem);
+    }
+}

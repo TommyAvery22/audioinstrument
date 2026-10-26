@@ -297,10 +297,21 @@ function buildControlGroup(player, groupName){
     return group;
 }
 
-// what each player's influence meter shows: player one's sound rings, player two's sound wobbles
+// describe player 2's wobble speed in plain words instead of a number
+function wobbleName(wobbleRate){
+    if(wobbleRate <= 2){
+        return "slow";
+    }
+    if(wobbleRate <= 6){
+        return "medium";
+    }
+    return "fast";
+}
+
+// what each player's influence meter shows: player one's sound goes metallic, player two's sound wobbles
 const meterInfo = {
-    one: { symbol: "✳", name: "ring", visual: "meter-fill", readout: "pure", caption: "set by player 2" },
-    two: { symbol: "∿", name: "wobble", visual: "meter-dot", readout: "still", caption: "set by player 1" }
+    one: { symbol: "✳", name: "metallic", visual: "meter-fill", readout: "off", caption: "player 2 controls this" },
+    two: { symbol: "∿", name: "wobble", visual: "meter-dot", readout: "off", caption: "player 1 controls this" }
 };
 
 // make a meter that shows what a player's partner is doing to their sound
@@ -451,6 +462,30 @@ function updateDisplay(){
             number.textContent = waves[player.waveIndex];
         }
     });
+
+    // the influence meters show what each player's partner is doing to their sound
+    let one = players[0];
+    let two = players[1];
+
+    // player 1's metallic bar fills up while player 2 is playing
+    if(one.ringing === true){
+        one.meterVisual.style.width = "100%";
+        one.meterReadout.textContent = "on";
+    } else {
+        one.meterVisual.style.width = "0%";
+        one.meterReadout.textContent = "off";
+    }
+
+    // player 2's wobble dot bounces at the real wobble speed while player 1 is playing
+    if(two.wobbling === true){
+        // one wobble is the dot going there and back, so it takes 1 divided by the rate in seconds
+        two.meterVisual.style.setProperty("--wobble-time", (1 / two.wobbleRate) + "s");
+        two.meterVisual.classList.add("wobbling");
+        two.meterReadout.textContent = wobbleName(two.wobbleRate);
+    } else {
+        two.meterVisual.classList.remove("wobbling");
+        two.meterReadout.textContent = "off";
+    }
 }
 
 // only light up keys while they're held, don't change the display when a control key is pressed
