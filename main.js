@@ -11,6 +11,13 @@ introDialogCloseButton.addEventListener("click", function closeIntroDialog() {
     introDialog.close();
 });
 
+// find the help button
+const helpButton = document.getElementById("help-button");
+// open the how to play dialog again when the help button is clicked
+helpButton.addEventListener("click", function openIntroDialog() {
+    introDialog.showModal();
+});
+
 ////// Players
 const players = [
     {
@@ -99,6 +106,10 @@ let audioReady = false;
 
 // run to setup audio system
 async function toneInit(){
+    // the dialog can be closed more than once now, but the audio only needs setting up the first time
+    if(audioReady === true){
+        return;
+    }
     // browsers block sound until the user clicks something, closing the dialog counts
     // await waits for tone to finish starting before moving on
     await Tone.start();

@@ -65,21 +65,11 @@ button:hover {
     color: var(--colour-01);
 }
 
-/*a slim title bar, like the label strip on a hardware synth*/
+/*no title bar, the header only holds the help button in the top right corner*/
 header {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 0.5rem 1rem;
-    padding: 1rem 1.5rem;
-    border-bottom: 0.1rem solid var(--colour-03);
-}
-
-header h1 {
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
+    justify-content: flex-end;
+    padding: 1rem 1.5rem 0;
 }
 
 #prototype-name {
@@ -355,4 +345,33 @@ main {
     to {
         left: calc(100% - 0.4rem);
     }
+}
+
+/*the how to play list is left aligned with asterisks so it reads like steps*/
+.how-to {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+    list-style: none;
+    font-size: 0.85rem;
+}
+
+.how-to li::before {
+    content: "* ";
+}
+
+/*the suggestion for playing together is set apart from the instructions*/
+.try {
+    font-size: 0.85rem;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/*a small round help button in the header*/
+#help-button {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border-radius: 50%;
 }
