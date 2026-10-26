@@ -28,6 +28,8 @@ body {
     font-family: "JetBrains Mono", monospace;
     background-color: var(--colour-01);
     color: var(--colour-02);
+    /*the background tint drifts slowly between players instead of flashing*/
+    transition: background-color 1.5s ease-out;
 }
 
 dialog[open] {

@@ -497,6 +497,21 @@ function updateDisplay(){
         two.meterVisual.classList.remove("wobbling");
         two.meterReadout.textContent = "off";
     }
+
+    // the background softly takes on the colour of whoever is playing more notes right now
+    let oneNotes = one.heldKeys.size;
+    let twoNotes = two.heldKeys.size;
+    let totalNotes = oneNotes + twoNotes;
+    if(totalNotes === 0){
+        // nobody is playing, so go back to the normal background from the css
+        document.body.style.backgroundColor = "";
+    } else {
+        // how much of the blend is player 1's colour, e.g. 2 notes to 1 is 67% player 1
+        let onePercent = Math.round(oneNotes / totalNotes * 100);
+        let blend = "color-mix(in srgb, var(--player-one) " + onePercent + "%, var(--player-two))";
+        // only a light tint, so it stays in the background and the keys are still easy to read
+        document.body.style.backgroundColor = "color-mix(in srgb, " + blend + " 12%, var(--colour-01))";
+    }
 }
 
 // only light up keys while they're held, don't change the display when a control key is pressed
