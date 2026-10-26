@@ -47,18 +47,20 @@ const players = [
     }
 ];
 
-// player 2's keys, in order, pick how metallic player 1 sounds
-    // whole numbers sound like bells, half and odd numbers sound clangy
-    const harmonicities = [1, 2, 3, 4, 0.5, 1.5, 2.5, 3.5, 5, 7];
+// player 2's keys, in order, pick how distorted player 1 sounds, from 0 (clean) to 1 (very crunchy)
+    // the home row is gentler, the top row is dirtier
+    const distortionAmounts = [0.2, 0.25, 0.3, 0.35, 0.4, 0.6, 0.7, 0.8, 0.9, 1];
+    // the distortion on player 1's sound, made in buildSound
+    let distortion;
     // player 1's keys, in order, pick how fast player two's sound wobbles, in wobbles per second
     const wobbleRates = [0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16];
     // the wobbling filter on player 2's sound, made in buildSound
     let autoFilter;
 
 // what each player's partner is doing to their sound right now, read by the influence meters
-// player 1's sound rings while player 2 plays, ringType is the harmonicity player 2 picked
-players[0].ringing = false;
-players[0].ringType = 1;
+// player 1's sound is distorted while player 2 plays, distortionAmount is how much player 2 picked
+players[0].distorted = false;
+players[0].distortionAmount = 0;
 // player 2's sound wobbles while player 1 plays, wobbleRate is how many wobbles per second
 players[1].wobbling = false;
 players[1].wobbleRate = 2;
@@ -133,12 +135,7 @@ function buildSound(){
     reverb = new Tone.Reverb({ decay: 4, wet: 0.3 });
     reverb.connect(Tone.Destination);
     players.forEach(function(player){
-        // player 1 is an frequency modulation synth, so player 2 can change how metallic it sounds
-        let voice = Tone.Synth;
-        if(player.id === "one"){
-            voice = Tone.FMSynth;
-        }
-        player.synth = new Tone.PolySynth(voice, {
+        player.synth = new Tone.PolySynth(Tone.Synth, {
             oscillator: { type: waves[player.waveIndex] },
             // turns each synth down so they don't get too loud when both players are playing
             volume: -12
@@ -154,12 +151,12 @@ function buildSound(){
             // player two's sound goes: synth > wobble > filter > echo > shared reverb
             player.synth.chain(autoFilter, player.filter, player.delay, reverb);
         } else {
-            player.synth.chain(player.filter, player.delay, reverb);
+            // distortion adds grit, wet 0 means player 1 sounds clean until player two plays
+            distortion = new Tone.Distortion({ distortion: 0.4, wet: 0 });
+            // player one's sound goes: synth > distortion > filter > echo > shared reverb
+            // the filter comes after the distortion so the darker setting can soften the crunch
+            player.synth.chain(distortion, player.filter, player.delay, reverb);
         }
-        
-        // player 1 starts as a pure tone until player two plays
-        // harmonicity is the ratio between the two oscillators in fm, modulation index is how strong the effect is
-        players[0].synth.set({ harmonicity: 1, modulationIndex: 0.5 });
     });
 }
 
@@ -178,22 +175,23 @@ function startNote(player, note){
     }
 
     if(player.id === "two"){
-        // find which of player 2's keys this note is, and pick a harmonicity for player 1
+        // find which of player 2's keys this note is, and pick how distorted player 1 sounds
         let index = Object.values(player.noteKeys).indexOf(note);
-        players[0].synth.set({ harmonicity: harmonicities[index], modulationIndex: 12 });
-        // remember the ring so player 1's meter can show it
-        players[0].ringing = true;
-        players[0].ringType = harmonicities[index];
+        distortion.distortion = distortionAmounts[index];
+        distortion.wet.rampTo(1, 0.1);
+        // remember the distortion so player 1's meter can show it
+        players[0].distorted = true;
+        players[0].distortionAmount = distortionAmounts[index];
     }
 }
 
 // stop a note on a player's synth, and let the other player's sound go back to normal
 function endNote(player, note){
     player.synth.triggerRelease(note);
-    // player 1 goes back to a pure tone once player 2 lets go of every key
+    // player 1 goes back to a clean sound once player 2 lets go of every key
     if(player.id === "two" && player.heldKeys.size === 0){
-        players[0].synth.set({ modulationIndex: 0.5 });
-        players[0].ringing = false;
+        distortion.wet.rampTo(0, 0.3);
+        players[0].distorted = false;
     }
 
     // player 2 stops wobbling once player one lets go of every key
@@ -308,6 +306,17 @@ function buildControlGroup(player, groupName){
     return group;
 }
 
+// describe how distorted player 1 is in plain words instead of a number
+function distortionName(distortionAmount){
+    if(distortionAmount <= 0.3){
+        return "low";
+    }
+    if(distortionAmount <= 0.6){
+        return "medium";
+    }
+    return "high";
+}
+
 // describe player 2's wobble speed in plain words instead of a number
 function wobbleName(wobbleRate){
     if(wobbleRate <= 2){
@@ -319,9 +328,9 @@ function wobbleName(wobbleRate){
     return "fast";
 }
 
-// what each player's influence meter shows: player one's sound goes metallic, player two's sound wobbles
+// what each player's influence meter shows: player one's sound gets distorted, player two's sound wobbles
 const meterInfo = {
-    one: { symbol: "✳", name: "metallic", visual: "meter-fill", readout: "off", caption: "player 2 controls this" },
+    one: { symbol: "⚡", name: "distortion", visual: "meter-fill", readout: "off", caption: "player 2 controls this" },
     two: { symbol: "∿", name: "wobble", visual: "meter-dot", readout: "off", caption: "player 1 controls this" }
 };
 
@@ -478,10 +487,10 @@ function updateDisplay(){
     let one = players[0];
     let two = players[1];
 
-    // player 1's metallic bar fills up while player 2 is playing
-    if(one.ringing === true){
-        one.meterVisual.style.width = "100%";
-        one.meterReadout.textContent = "on";
+    // player 1's distortion bar fills up to however much distortion player 2 picked
+    if(one.distorted === true){
+        one.meterVisual.style.width = (one.distortionAmount * 100) + "%";
+        one.meterReadout.textContent = distortionName(one.distortionAmount);
     } else {
         one.meterVisual.style.width = "0%";
         one.meterReadout.textContent = "off";
