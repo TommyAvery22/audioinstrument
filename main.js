@@ -251,7 +251,9 @@ const keyboardRows = [
 ];
 
 // readable names for the control keys
-const controlNames = { darker: "darker", brighter: "brighter", wave: "change wave", lessEcho: "less echo", moreEcho: "more echo" };
+const controlNames = { darker: "darker", brighter: "brighter", wave: "wave", lessEcho: "less echo", moreEcho: "more echo" };
+// a symbol for each control so it can be recognised at a glance, the name sits underneath
+const controlSymbols = { darker: "☾", brighter: "☀", wave: "∿", lessEcho: "(·)", moreEcho: "((·))" };
 
 // draw the keyboard on screen, each key coloured by the player who owns it
 function buildDisplay(){
@@ -275,10 +277,13 @@ function buildDisplay(){
 
             let letter = document.createElement("kbd");
             letter.textContent = keyLabel(code);
+            // control keys show a symbol above their name
+            let symbol = document.createElement("span");
+            symbol.className = "symbol";
             let label = document.createElement("span");
             label.className = "label";
 
-            key.append(letter, label);
+            key.append(letter, symbol, label);
             row.append(key);
         });
         keyboard.append(row);
@@ -299,7 +304,8 @@ function updateDisplay(){
             // light up note keys while they're held
             key.classList.toggle("held", found.player.heldKeys.has(key.dataset.code));
         } else {
-            // control keys show what they change
+            // control keys show a symbol for what they change, with its name underneath
+            key.querySelector(".symbol").textContent = controlSymbols[found.value];
             label.textContent = controlNames[found.value];
         }
     });
