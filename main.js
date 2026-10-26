@@ -48,6 +48,14 @@ const players = [
     // the wobbling filter on player 2's sound, made in buildSound
     let autoFilter;
 
+// what each player's partner is doing to their sound right now, read by the influence meters
+// player 1's sound rings while player 2 plays, ringType is the harmonicity player 2 picked
+players[0].ringing = false;
+players[0].ringType = 1;
+// player 2's sound wobbles while player 1 plays, wobbleRate is how many wobbles per second
+players[1].wobbling = false;
+players[1].wobbleRate = 2;
+
 // give every player an empty list of the note keys they're holding down
 players.forEach(function(player){
     player.heldKeys = new Set();
@@ -153,12 +161,18 @@ function startNote(player, note){
         let index = Object.values(player.noteKeys).indexOf(note);
         autoFilter.frequency.rampTo(wobbleRates[index], 0.2);
         autoFilter.depth.rampTo(1, 0.3);
+        // remember the wobble so player 2's meter can show it
+        players[1].wobbling = true;
+        players[1].wobbleRate = wobbleRates[index];
     }
 
     if(player.id === "two"){
         // find which of player 2's keys this note is, and pick a harmonicity for player 1
         let index = Object.values(player.noteKeys).indexOf(note);
         players[0].synth.set({ harmonicity: harmonicities[index], modulationIndex: 12 });
+        // remember the ring so player 1's meter can show it
+        players[0].ringing = true;
+        players[0].ringType = harmonicities[index];
     }
 }
 
@@ -168,11 +182,13 @@ function endNote(player, note){
     // player 1 goes back to a pure tone once player 2 lets go of every key
     if(player.id === "two" && player.heldKeys.size === 0){
         players[0].synth.set({ modulationIndex: 0.5 });
+        players[0].ringing = false;
     }
 
     // player 2 stops wobbling once player one lets go of every key
     if(player.id === "one" && player.heldKeys.size === 0){
         autoFilter.depth.rampTo(0, 0.3);
+        players[1].wobbling = false;
     }
 }
 
