@@ -50,15 +50,28 @@ const players = [
 // player 2's keys, in order, pick how distorted player 1 sounds, from 0 (clean) to 1 (very crunchy)
     // the home row is gentler, the top row is dirtier
     const distortionAmounts = [0.2, 0.25, 0.3, 0.35, 0.4, 0.6, 0.7, 0.8, 0.9, 1];
-    // the distortion on player 1's sound, made in buildSound
-    let distortion;
-    // like a guitar pedal: boost the sound going into the distortion so it really crunches,
-    // then turn it back down coming out so it gets grittier without getting louder
+    // the distortion on player 1's sound, all made in buildSound
+    // tone's own distortion effect sometimes went silent after being switched off and on,
+    // so it's built from simpler parts: a clean path and a distorted path that fade between each other
+    // the clean sound, starts at full volume
+    let cleanLevel;
+    // like a guitar pedal: the distorted path is boosted going in so it really crunches,
     let distortionBoost;
+    // squashed by the shaper to add the grit,
+    let distortionShaper;
+    // then turned down coming out so it gets grittier without getting louder, starts silent
     let distortionCut;
     // how much to boost going in, and how much to turn down coming out (measured so the volume stays about the same)
     const boostAmount = 8;
-    const cutAmount = 1 / 6.5;
+    const cutAmount = 1 / 19.5;
+
+// make a distortion curve: the higher the amount, the harder the loud parts of the sound get squashed
+function distortionCurve(amount){
+    let squash = amount * 50;
+    return function(x){
+        return (1 + squash) * x / (1 + squash * Math.abs(x));
+    };
+}
     // player 1's keys, in order, pick how fast player two's sound wobbles, in wobbles per second
     const wobbleRates = [0.5, 1, 2, 3, 4, 6, 8, 10, 12, 16];
     // the wobbling filter on player 2's sound, made in buildSound
@@ -158,14 +171,19 @@ function buildSound(){
             // player two's sound goes: synth > wobble > filter > echo > shared reverb
             player.synth.chain(autoFilter, player.filter, player.delay, reverb);
         } else {
-            // distortion adds grit, wet 0 means player 1 sounds clean until player two plays
-            distortion = new Tone.Distortion({ distortion: 0.4, wet: 0 });
-            // the boost and cut start at 1, so nothing changes until player two plays
-            distortionBoost = new Tone.Gain(1);
-            distortionCut = new Tone.Gain(1);
-            // player one's sound goes: synth > boost > distortion > cut > filter > echo > shared reverb
+            cleanLevel = new Tone.Gain(1);
+            distortionBoost = new Tone.Gain(boostAmount);
+            distortionShaper = new Tone.WaveShaper(distortionCurve(0.4), 1024);
+            // the distorted path starts silent, so player 1 sounds clean until player two plays
+            distortionCut = new Tone.Gain(0);
+            // player one's sound splits into a clean path and a distorted path, which join again at the filter
+            player.synth.connect(cleanLevel);
+            player.synth.chain(distortionBoost, distortionShaper, distortionCut);
+            cleanLevel.connect(player.filter);
+            distortionCut.connect(player.filter);
+            // then: filter > echo > shared reverb
             // the filter comes after the distortion so the darker setting can soften the crunch
-            player.synth.chain(distortionBoost, distortion, distortionCut, player.filter, player.delay, reverb);
+            player.filter.chain(player.delay, reverb);
         }
     });
 }
@@ -187,10 +205,9 @@ function startNote(player, note){
     if(player.id === "two"){
         // find which of player 2's keys this note is, and pick how distorted player 1 sounds
         let index = Object.values(player.noteKeys).indexOf(note);
-        distortion.distortion = distortionAmounts[index];
-        distortion.wet.rampTo(1, 0.1);
-        // drive the distortion hard and turn it back down afterwards, so it's gritty rather than just louder
-        distortionBoost.gain.rampTo(boostAmount, 0.1);
+        distortionShaper.setMap(distortionCurve(distortionAmounts[index]));
+        // fade from the clean path to the distorted path
+        cleanLevel.gain.rampTo(0, 0.1);
         distortionCut.gain.rampTo(cutAmount, 0.1);
         // remember the distortion so player 1's meter can show it
         players[0].distorted = true;
@@ -203,9 +220,9 @@ function endNote(player, note){
     player.synth.triggerRelease(note);
     // player 1 goes back to a clean sound once player 2 lets go of every key
     if(player.id === "two" && player.heldKeys.size === 0){
-        distortion.wet.rampTo(0, 0.3);
-        distortionBoost.gain.rampTo(1, 0.3);
-        distortionCut.gain.rampTo(1, 0.3);
+        // fade back from the distorted path to the clean path
+        cleanLevel.gain.rampTo(1, 0.3);
+        distortionCut.gain.rampTo(0, 0.3);
         players[0].distorted = false;
     }
 
