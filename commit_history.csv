@@ -1,0 +1,84 @@
+TommyAvery22,Tue Oct 6 13:03:11 2026 +1100,tied the fade colour to the player who played it,
+TommyAvery22,Tue Oct 6 12:58:28 2026 +1100,match trail length to echo,the length of the keys fade corresponds to the length of which that player has their echo set
+
+TommyAvery22,Tue Oct 6 12:55:15 2026 +1100,make keys fade out when let go,faded keys out slowly after they're let go
+
+TommyAvery22,Tue Oct 6 10:49:35 2026 +1100,Coloured keyboard and fixed spacing,Coloured the keyboard to the corresponding player.
+Also removed the spacing between the keys
+
+TommyAvery22,Tue Oct 6 10:47:11 2026 +1100,give the entire keyboard to whoevers turn it is,
+TommyAvery22,Tue Oct 6 10:43:10 2026 +1100,Ensure keys belong to the turn of the current player,
+TommyAvery22,Tue Oct 6 10:41:34 2026 +1100,Give each player access to the whole keyboard,
+TommyAvery22,Tue Oct 6 10:38:43 2026 +1100,added countdown and metronome,Added metronome sound and 6-second countdown
+
+TommyAvery22,Tue Oct 6 10:25:35 2026 +1100,explained the 6 second turns in the dialog,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Tue Oct 6 10:25:00 2026 +1100,showed the countdown and whose turn it is,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Tue Oct 6 10:24:48 2026 +1100,added a metronome tick, higher at the start of each turn,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Tue Oct 6 10:24:41 2026 +1100,gave each player 6 seconds per turn,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Tue Oct 6 10:24:41 2026 +1100,blocked notes played out of turn,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Tue Oct 6 10:09:34 2026 +1100,started the taking turns prototype,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Tue Oct 6 05:45:00 2026 +1100,Update the status as players play,showed each player's notes and sound settings
+
+TommyAvery22,Tue Oct 6 05:41:46 2026 +1100,show each player's status on screen,added a coloured section for each player. changed player 1's colour
+
+TommyAvery22,Tue Oct 6 05:27:23 2026 +1100,make bottom row keys change the sound characteristics,made the bottom row change filter, wave and echo
+
+TommyAvery22,Tue Oct 6 05:23:28 2026 +1100,added filter, echo, and shared reverb,added a filter and echo per player and a shared reverb
+
+TommyAvery22,Tue Oct 6 05:17:45 2026 +1100,added a synth for each player,gave each player a synth and played notes from the keyboard
+
+TommyAvery22,Tue Oct 6 05:11:07 2026 +1100,starts the audio when the dialog closes,started tone when the intro dialog closes
+
+TommyAvery22,Tue Oct 6 05:05:04 2026 +1100,track which keys each player is holding,tracked which note keys each player is holding
+
+TommyAvery22,Tue Oct 6 05:00:42 2026 +1100,respond to key inputs,logged which player pressed each key
+
+TommyAvery22,Tue Oct 6 04:56:14 2026 +1100,fixed missing brackets,fixed missing brackets between player 1 and 2
+
+TommyAvery22,Tue Oct 6 04:52:33 2026 +1100,Turned key codes into readable labels,added keyLabel to show keys as they're printed
+
+TommyAvery22,Tue Oct 6 04:49:36 2026 +1100,added findKey function,added findKey to look up which player owns a key
+
+TommyAvery22,Tue Oct 6 04:36:22 2026 +1100,added player 2's keys,added player 2 on the right side, who will play octave higher
+
+TommyAvery22,Tue Oct 6 04:34:09 2026 +1100,added player 1's note and control keys,
+TommyAvery22,Tue Oct 6 04:32:22 2026 +1100,altered main.js,removed class test code, kept the intro dialog
+
+TommyAvery22,Mon Oct 5 23:27:32 2026 +1100,assigned colours to each player,Linked each player (player 1 & 2) to their respective colours. Also updated fonts
+
+TommyAvery22,Mon Oct 5 23:13:58 2026 +1100,Added player colours and updated colours in root,Ensured that each player is represented by a distinct colour
+
+TommyAvery22,Mon Oct 5 22:17:41 2026 +1100,pinned tone version and allowed zooming,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Mon Oct 5 22:17:41 2026 +1100,replaced test controls with an empty stage for the display,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Mon Oct 5 22:05:59 2026 +1100,Updated intro dialogue message,Changed the message to quickly explain the synth and its mapping
+
+TommyAvery22,Mon Oct 5 20:47:02 2026 +1100,fixed timezone,
+TommyAvery22,Mon Oct 5 20:43:22 2026 +1100,Fixed bug - incorrect element id,oscilator wasn't working because it wasn't calling the correct element
+
+TommyAvery22,Mon Oct 5 20:38:47 2026 +1100,Fixed bugs - test button & toneInit,Corrected case sensitive inputs and incorrect element id's
+
+TommyAvery22,Mon Oct 5 20:19:25 2026 +1100,added timezone,
+TommyAvery22,Mon Oct 5 14:41:26 2026 +1100,Added audio play/pause,
+TommyAvery22,Sun Oct 4 23:58:56 2026 +1100,Put buttons and audio into single main tag,
+TommyAvery22,Sun Oct 4 23:48:38 2026 +1100,Altered the spacing between lines,
+TommyAvery22,Tue Sep 15 23:46:43 2026 +1000,added random and temporal,implemented an audio track player and added in our random track location button
+
+TommyAvery22,Tue Aug 25 01:28:33 2026 +1000,css and js edge case,added visual feedback to note playing, and handled edge cases for key press
+
+TommyAvery22,Tue Aug 25 01:19:46 2026 +1000,added event listeners for second key,separated the start and end of playing the note as well as mouseleave
+
+TommyAvery22,Sun Aug 16 19:13:57 2026 +1000,added our design system css,we set up some variables for colour and the border, and applied style to our dialog vox
+
+TommyAvery22,Sun Aug 16 19:04:43 2026 +1000,added audio init,added an event listener on dialog close to start the audio system
+
+TommyAvery22,Sun Aug 16 18:58:55 2026 +1000,added intro dialog,added dialog element and a button that closes it
+
+TommyAvery22,Wed Jul 29 15:15:55 2026 +1000,init commit,added initial files and working "test sound" button
