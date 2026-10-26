@@ -16,7 +16,16 @@
 <body>
     <dialog id="intro-dialog">
         <h2>Multiplayer Synth</h2>
-        <p>Two players control the sound with one keyboard. Your notes affect each other's sound.</p>
+        <p>Two players, player 1 plays the left half, player 2 plays the right half.</p>
+        <!-- how to play, in the order a new player needs it -->
+        <ul class="how-to">
+            <li>The top two rows play the notes.</li>
+            <li>The bottom row changes your own sound: brightness, wave and echo.</li>
+            <li>Your notes also affect your partner's sound. Player 1 makes player 2 wobble, player 2 makes player 1 sound distorted.</li>
+            <li>The boxes at the top show what your partner is doing to your sound.</li>
+        </ul>
+        <!-- suggestions for how to play together, since the instrument works best as a conversation -->
+        <p class="try">Try answering each other's notes, or holding a note to change your partner's sound while they play.</p>
         <button id="intro-dialog-close">Play</button>
     </dialog>
     
