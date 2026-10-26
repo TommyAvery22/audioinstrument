@@ -255,8 +255,67 @@ const controlNames = { darker: "darker", brighter: "brighter", wave: "wave", les
 // a symbol for each control so it can be recognised at a glance, the name sits underneath
 const controlSymbols = { darker: "☾", brighter: "☀", wave: "∿", lessEcho: "(·)", moreEcho: "((·))" };
 
-// draw the keyboard on screen, each key coloured by the player who owns it
+// what each player's influence meter shows: player one's sound rings, player two's sound wobbles
+const meterInfo = {
+    one: { symbol: "✳", name: "ring", visual: "meter-fill", readout: "pure", caption: "set by player 2" },
+    two: { symbol: "∿", name: "wobble", visual: "meter-dot", readout: "still", caption: "set by player 1" }
+};
+
+// make a meter that shows what a player's partner is doing to their sound
+function buildMeter(player){
+    let info = meterInfo[player.id];
+    let meter = document.createElement("div");
+    meter.className = "meter";
+    // the meter is drawn in the partner's colour, because it shows the partner's influence
+    if(player.id === "one"){
+        meter.dataset.player = "two";
+    } else {
+        meter.dataset.player = "one";
+    }
+
+    // top line: symbol, name, and who's causing it
+    let heading = document.createElement("div");
+    heading.className = "meter-heading";
+    let symbol = document.createElement("span");
+    symbol.className = "meter-symbol";
+    symbol.textContent = info.symbol;
+    let name = document.createElement("span");
+    name.className = "meter-name";
+    name.textContent = info.name;
+    let caption = document.createElement("span");
+    caption.className = "meter-caption";
+    caption.textContent = info.caption;
+    heading.append(symbol, name, caption);
+
+    // bottom line: a bar that fills (ring) or a dot that moves (wobble), and a word describing it
+    let body = document.createElement("div");
+    body.className = "meter-body";
+    let track = document.createElement("div");
+    track.className = "meter-track";
+    let visual = document.createElement("div");
+    visual.className = info.visual;
+    track.append(visual);
+    let readout = document.createElement("span");
+    readout.className = "meter-readout";
+    readout.textContent = info.readout;
+    body.append(track, readout);
+
+    meter.append(heading, body);
+    // remember the parts that change, so updateDisplay can find them later
+    player.meterVisual = visual;
+    player.meterReadout = readout;
+    return meter;
+}
+
+// draw the meters and the keyboard on screen, each key coloured by the player who owns it
 function buildDisplay(){
+    // the meters sit in a row above the keyboard, one over each player's half
+    let meters = document.createElement("div");
+    meters.className = "meters";
+    players.forEach(function(player){
+        meters.append(buildMeter(player));
+    });
+
     let keyboard = document.createElement("div");
     keyboard.className = "keyboard";
 
@@ -288,7 +347,12 @@ function buildDisplay(){
         });
         keyboard.append(row);
     });
-    stage.append(keyboard);
+
+    // the meters and keyboard are grouped so the meters line up with the keyboard's width
+    let instrument = document.createElement("div");
+    instrument.className = "instrument";
+    instrument.append(meters, keyboard);
+    stage.append(instrument);
 }
 
 // write what each key does on it
