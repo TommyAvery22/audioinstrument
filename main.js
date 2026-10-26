@@ -303,6 +303,9 @@ function updateDisplay(){
             label.textContent = found.value;
             // light up note keys while they're held
             key.classList.toggle("held", found.player.heldKeys.has(key.dataset.code));
+            // the trail lasts longer the more echo the player has, from 1 to 4 seconds
+            let trail = 1 + found.player.echo * 4;
+            key.style.setProperty("--trail", trail + "s");
         } else {
             // control keys show a symbol for what they change, with its name underneath
             key.querySelector(".symbol").textContent = controlSymbols[found.value];
