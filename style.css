@@ -141,6 +141,46 @@ main {
     margin-top: 0.75rem;
     padding-top: 1.25rem;
     border-top: 0.1rem dashed var(--colour-03);
+    /*a little more space between groups than between keys, so the groups read separately*/
+    gap: calc(var(--gap) * 2);
+}
+
+/*related controls are grouped, with their name and current setting underneath*/
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.group-keys {
+    display: flex;
+    gap: var(--gap);
+}
+
+/*a line under the group's keys acts like a bracket, with the name and value centred beneath*/
+.group-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.4rem;
+    border-top: 0.15rem solid var(--player);
+    font-size: 0.65rem;
+}
+
+.group-name {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+}
+
+.group-number {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/*the gap down the middle of the control row comes after player one's third group*/
+.control-group:nth-child(3) {
+    margin-right: calc(var(--gap) * 3);
 }
 
 /*a wider gap after the fifth key marks where one player's half ends*/
@@ -214,7 +254,8 @@ main {
 .instrument {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    /*plenty of space between the meters and the keyboard so they read as separate parts*/
+    gap: 3.5rem;
 }
 
 /*one meter over each player's half of the keyboard*/

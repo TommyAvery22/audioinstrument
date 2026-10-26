@@ -254,6 +254,32 @@ const keyboardRows = [
 const controlNames = { darker: "darker", brighter: "brighter", wave: "wave", lessEcho: "less echo", moreEcho: "more echo" };
 // a symbol for each control so it can be recognised at a glance, the name sits underneath
 const controlSymbols = { darker: "☾", brighter: "☀", wave: "∿", lessEcho: "(·)", moreEcho: "((·))" };
+// which group each control belongs to, so related controls sit together under one value
+const controlGroups = { darker: "brightness", brighter: "brightness", wave: "wave", lessEcho: "echo", moreEcho: "echo" };
+
+// a box that holds related control keys, with the group's name and current value underneath
+function buildControlGroup(player, groupName){
+    let group = document.createElement("div");
+    group.className = "control-group";
+    // data-group says which setting to show, data-player gives the group its player's colour
+    group.dataset.group = groupName;
+    group.dataset.player = player.id;
+
+    let keys = document.createElement("div");
+    keys.className = "group-keys";
+
+    let value = document.createElement("div");
+    value.className = "group-value";
+    let name = document.createElement("span");
+    name.className = "group-name";
+    name.textContent = groupName;
+    let number = document.createElement("span");
+    number.className = "group-number";
+    value.append(name, number);
+
+    group.append(keys, value);
+    return group;
+}
 
 // what each player's influence meter shows: player one's sound rings, player two's sound wobbles
 const meterInfo = {
@@ -343,7 +369,20 @@ function buildDisplay(){
             label.className = "label";
 
             key.append(letter, symbol, label);
-            row.append(key);
+
+            if(found.type === "control"){
+                // controls are grouped by what they change, e.g. darker and brighter both change brightness
+                let groupName = controlGroups[found.value];
+                let group = row.lastElementChild;
+                // start a new group when this key belongs to a different group or player than the last one
+                if(group === null || group.dataset.group !== groupName || group.dataset.player !== found.player.id){
+                    group = buildControlGroup(found.player, groupName);
+                    row.append(group);
+                }
+                group.querySelector(".group-keys").append(key);
+            } else {
+                row.append(key);
+            }
         });
         keyboard.append(row);
     });
@@ -374,6 +413,26 @@ function updateDisplay(){
             // control keys show a symbol for what they change, with its name underneath
             key.querySelector(".symbol").textContent = controlSymbols[found.value];
             label.textContent = controlNames[found.value];
+        }
+    });
+
+    // write the current setting under each group of controls
+    let groups = document.querySelectorAll(".control-group");
+    groups.forEach(function(group){
+        let player = players[0];
+        if(group.dataset.player === "two"){
+            player = players[1];
+        }
+        let number = group.querySelector(".group-number");
+        if(group.dataset.group === "brightness"){
+            // the filter cutoff in hertz, higher is brighter
+            number.textContent = Math.round(player.cutoff) + "hz";
+        } else if(group.dataset.group === "echo"){
+            // how much echo, as a percentage
+            number.textContent = Math.round(player.echo * 100) + "%";
+        } else if(group.dataset.group === "wave"){
+            // the name of the wave shape the player is on
+            number.textContent = waves[player.waveIndex];
         }
     });
 }
