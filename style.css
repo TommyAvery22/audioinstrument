@@ -7,7 +7,7 @@
     --colour-03: lightgray;
     --colour-04: darkgray;
     /*each player has their own colour so they can find their part of the instrument*/
-    --player-one: #ea15f5;
+    --player-one: #0f5cd9;
     --player-two: #ffd500;
     --border: 0.25rem double var(--colour-03);
 }
@@ -275,10 +275,6 @@ main {
     gap: 0.5rem;
 }
 
-.meter-symbol {
-    font-size: 1.2rem;
-}
-
 .meter-name {
     font-size: 0.8rem;
     font-weight: 700;
@@ -435,4 +431,20 @@ main {
     .keyboard {
         --gap: 0.6rem;
     }
+}
+
+/*player names in the how to play popup are highlighted in their player's colour, the same colours as the keys*/
+.player-name {
+    padding: 0.05rem 0.4rem;
+    border-radius: 0.3rem;
+    font-weight: 700;
+    /*keeps "player 1" on one line so the highlight never splits in two*/
+    white-space: nowrap;
+    background-color: var(--player);
+    color: black;
+}
+
+/*white text reads better than black on the blue*/
+.player-name[data-player="one"] {
+    color: white;
 }

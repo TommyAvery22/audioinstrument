@@ -362,8 +362,8 @@ function wobbleName(wobbleRate){
 
 // what each player's influence meter shows: player one's sound gets distorted, player two's sound wobbles
 const meterInfo = {
-    one: { symbol: "⚡", name: "distortion", visual: "meter-fill", readout: "off", caption: "player 2 controls this" },
-    two: { symbol: "∿", name: "wobble", visual: "meter-dot", readout: "off", caption: "player 1 controls this" }
+    one: { name: "distortion", visual: "meter-fill", readout: "off", controller: "yellow" },
+    two: { name: "wobble", visual: "meter-dot", readout: "off", controller: "blue" }
 };
 
 // make a meter that shows what a player's partner is doing to their sound
@@ -378,19 +378,22 @@ function buildMeter(player){
         meter.dataset.player = "one";
     }
 
-    // top line: symbol, name, and who's causing it
+    // top line: name, and who's causing it
     let heading = document.createElement("div");
     heading.className = "meter-heading";
-    let symbol = document.createElement("span");
-    symbol.className = "meter-symbol";
-    symbol.textContent = info.symbol;
     let name = document.createElement("span");
     name.className = "meter-name";
     name.textContent = info.name;
+    // the caption names who controls the meter by colour, highlighted in that colour
     let caption = document.createElement("span");
     caption.className = "meter-caption";
-    caption.textContent = info.caption;
-    heading.append(symbol, name, caption);
+    let controller = document.createElement("span");
+    controller.className = "player-name";
+    controller.textContent = info.controller;
+    // the meter is drawn in the controller's colour, so the highlight uses the same one
+    controller.dataset.player = meter.dataset.player;
+    caption.append(controller, " controls this");
+    heading.append(name, caption);
 
     // bottom line: a bar that fills (ring) or a dot that moves (wobble), and a word describing it
     let body = document.createElement("div");

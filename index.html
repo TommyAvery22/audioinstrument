@@ -16,12 +16,12 @@
 <body>
     <dialog id="intro-dialog">
         <h2>Multiplayer Synth</h2>
-        <p>Two players, player 1 plays the left half, player 2 plays the right half.</p>
+        <p>Two players, <span class="player-name" data-player="one">blue</span> plays the left half, <span class="player-name" data-player="two">yellow</span> plays the right half.</p>
         <!-- how to play, in the order a new player needs it -->
         <ul class="how-to">
             <li>The top two rows play the notes.</li>
             <li>The bottom row changes your own sound: brightness, wave and echo.</li>
-            <li>Your notes also affect your partner's sound. Player 1 makes player 2 wobble, player 2 makes player 1 sound distorted.</li>
+            <li>Your notes also affect your partner's sound. <span class="player-name" data-player="one">Blue</span> makes <span class="player-name" data-player="two">yellow</span> wobble, <span class="player-name" data-player="two">yellow</span> makes <span class="player-name" data-player="one">blue</span> sound distorted.</li>
             <li>The boxes at the top show what your partner is doing to your sound.</li>
         </ul>
         <!-- suggestions for how to play together, since the instrument works best as a conversation -->
@@ -30,8 +30,8 @@
     </dialog>
     
     <header>
-        <h1>Multiplayer synth</h1>
-        <h2>Mapping Prototype 3: Conflict</h2>
+        <!-- opens the how to play dialog again at any time -->
+        <button id="help-button" aria-label="How to play">?</button>
     </header>
     <main id="stage">
         <!-- each prototype builds its own display in here -->
