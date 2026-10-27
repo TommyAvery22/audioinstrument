@@ -2,37 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Instrument</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer Synth</title>
 
     <link rel="stylesheet" href="reset.css">
     <link rel="stylesheet" href="style.css">
     
-    <script src="https://unpkg.com/tone"></script>
+    <!-- pinned to version 15 so a new tone release can't break the prototypes -->
+    <script src="https://unpkg.com/tone@15"></script>
     <script src="main.js" defer></script>
 
 </head>
 <body>
     <dialog id="intro-dialog">
-        <p>Hi I'm going to make some sound</p>
-        <button id="intro-dialog-close">ok</button>
+        <h2>Multiplayer Synth</h2>
+        <p>Two players, <span class="player-name" data-player="one">blue</span> plays the left half, <span class="player-name" data-player="two">yellow</span> plays the right half.</p>
+        <!-- how to play, in the order a new player needs it -->
+        <ul class="how-to">
+            <li>The top two rows play the notes.</li>
+            <li>The bottom row changes your own sound: brightness, wave and echo.</li>
+            <li>While you hold a note, it also changes your partner's sound.</li>
+            <li><span class="player-name" data-player="one">Blue</span> notes make <span class="player-name" data-player="two">yellow</span> wobble. The higher the blue note, the faster the wobble.</li>
+            <li><span class="player-name" data-player="two">Yellow</span> notes make <span class="player-name" data-player="one">blue</span> sound distorted. The higher the yellow note, the more distortion.</li>
+            <li>Let go of all your notes and your partner's sound goes back to normal.</li>
+            <li>The boxes at the top show what your partner is doing to your sound right now.</li>
+        </ul>
+        <!-- suggestions for how to play together, since the instrument works best as a conversation -->
+        <p class="try">Try answering each other's notes, or holding a note to change your partner's sound while they play.</p>
+        <button id="intro-dialog-close">Play</button>
     </dialog>
     
     <header>
-        <h1>Audio Instrument</h1>
+        <!-- opens the how to play dialog again at any time -->
+        <button id="help-button" aria-label="How to play">?</button>
     </header>
-    <main>
-        <button id="test-button" data-note="c4">sound check</button>
-        <button id="key-test" data-note="d4">key</button>
-        <audio id="audio-track" src="./assets/audio/p-hase_Leapt.mp3" loop controls></audio>
-        <button id="random-time">random</button>
-        <button id="play-button">play track</button>
-        <input type="range" name="osc-range" id="osc-range">
-        <label for="osc-range">change osc</label>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Augusta_Dohlmann_Wild_flowers_%281905%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original"
-             alt="painting of flowers in a vase" id="flower-painting" data-note="a3">
+    <main id="stage">
+        <!-- each prototype builds its own display in here -->
     </main>
     
 </body>
