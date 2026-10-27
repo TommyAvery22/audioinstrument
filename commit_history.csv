@@ -1,47 +1,149 @@
+TommyAvery22,Tue Oct 27 15:53:28 2026 +1100,label each player by their colour in the popup,add this to the assessment 3 page in the specialisation work index. integrate screenshots from the instrument where applicable:
+
+This multiplayer synthesiser can be played by two people, sharing the same computer and keyboard. One player has control over the left half, the other controls the right, with each player affecting a variable that affects the musical output. The yellow player controls the sound's distortion whereas the blue player controls its wobble. In addition to this, each player can adjust their sound's brightness, wave type, and echo during play. The conflict comes from the other players' sound and how it affects the combined output. Sometimes the combined variables and keys being played produce a sound that’s pleasing, other times they don’t. Each player has to notice patterns with their partners inputs so they can adjust theirs accordingly. The skill progression comes from trial-and-error. That’s one of its flaws, it’s not an easy instrument to pick-up. You need to have an understanding of what notes work together, be able to read the other players actions whilst playing, know what tempo that should be played at any given moment, and when a variable should be adjusted. Another interactive feature comes from the sound feedback and how that influences how each player plays. Making the distortion and wobble variables distinct enough allowed each player an understanding in how they influence the combined output. Neither player can cooperate if they don’t understand their control. Some of the feedback received in the user testing pointed to feelings of frustration or boredom when the other player had more control over them. The level of control between the two players is essentially equal so that each player feels as if they need the other as much as they are needed by them.
+With this instrument, each key press also changes the other player's sound in real time.
+When the blue player holds a note, yellow’s sound starts to wobble. Different blue notes give a slower or faster wobble.
+When the yellow player holds a note, blue’s sound becomes more distorted. Higher yellow notes gives more distortion.
+When the player lets go, their partner’s sound returns to normal.
+So neither player controls their own wobble or distortion. They only hear it happening, so they have to listen to each other and respond. The instrument itself is built with[ Tone.js](https://tonejs.github.io/), which sits on top of the browser’s built-in Web Audio system. Each player’s sound travels through a chain of effects:
+A synthesiser creates the note.
+Blue’s notes switch on a wobble effect (an auto filter) in yellow’s chain. Yellow’s notes switch on a distortion effect (a waveshaper) in blue’s chain.
+Each player also has their own brightness, echo and reverb effects.
+The key presses switch these effects on and off while each person plays.
+The design system made it as easy as possible for first time players to understand the controls. The opening popup box established knowledge for how the instrument should be played. If this isn’t communicated clearly, then players would easily become frustrated or lose interest. Keeping all of the controls within a confined area on the keyboard helped simplify what is quite a complex instrument to play well. The control variable keys (on the bottom row) are separated from the notes to avoid confusion as to what does what. The layout matches the system with the real world and each player's respective controls are a distinct colour. This quickly communicates who controls what and where the controls are, to minimise players having to look down at the keyboard. It was also important to clearly visualise the keys being pressed and the effect that has on the variables, allowing the opportunity for each player to react accordingly to the other players inputs. A fade trail was added so that each player could easily see the key the other player had just played. The length of the fade also matches the current echo setting for that player, so that heard notes can be identified by their played key. There’s also an influence meter above each control so it can be understood how the other players' inputs affect the sound. These are visually presented so they can be interpreted in each player's peripheral vision, so they don’t have to take their eye off what’s most important. Also, each of the variable control keys contain a symbol so users can identify their purpose more easily, without having to read any text.
+
+TommyAvery22,Tue Oct 27 14:55:47 2026 +1100,Merge branch 'final-instrument' of https://github.com/TommyAvery22/audioinstrument into final-instrument,
+TommyAvery22,Tue Oct 27 14:55:37 2026 +1100,call the players blue and yellow in the popup and meters,replaced player 1 and player 2 with blue and yellow in the how to play popup and the meter captions, each highlighted in its own colour
+
+TommyAvery22,Tue Oct 27 08:02:45 2026 +1100,Remove header titles and add help button,
+TommyAvery22,Tue Oct 27 07:49:44 2026 +1100,Merge pull request #2 from instrument-final/final-instrument,Final instrument
+TommyAvery22,Tue Oct 27 07:49:28 2026 +1100,Merge branch 'final-instrument' into final-instrument,
+TommyAvery22,Tue Oct 27 07:17:32 2026 +1100,made the layout fit medium to XL screens,keys now resize with the screen width so the whole keyboard always fits
+
+TommyAvery22,Tue Oct 27 06:56:01 2026 +1100,fixed the wobble not producing sound,
+TommyAvery22,Tue Oct 27 06:30:41 2026 +1100,made the distortion grittier instead of just louder,the distortion was mostly just making player 1 louder. now player 1's sound gets boosted going into the distortion so it actually crunches, then turned back down after so the volume stays about the same. both go back to normal when player 2 lets go
+
+TommyAvery22,Tue Oct 27 06:23:45 2026 +1100,replace metallic variable with distortion,
+TommyAvery22,Tue Oct 27 05:25:46 2026 +1100,made the background tint fade slowly,added a transition so the background drifts between colours instead of flashing every time a note is played
+
+
+TommyAvery22,Tue Oct 27 04:42:35 2026 +1100,rewrite the intro dialog and remove the page title,The dialog now explains the keyboard split, the note and control rows, how each player's notes affect their partner's sound, and what the boxes at the top show, with a suggestion for playing together. The page title is removed so the instrument starts at the top of the page, and a ? button in the top right reopens the dialog.
+
+
+TommyAvery22,Tue Oct 27 04:33:40 2026 +1100,animate the wobble dot to bounce at the real wobble speed,wobble keyframe animation slides the dot from one end of the meter track to the other and back
+
+
+TommyAvery22,Tue Oct 27 04:05:56 2026 +1100,Save ring and wobble state when players play so the meters can show it,Adds ringing and ringType to player 1, and wobbling and wobbleRate to player 2. startNote saves the ring type or wobble speed a player's note sets on their partner, and endNote clears it once that player lets go of every key. The sound is unchanged; these values are for the influence meters to read.
+
+
+TommyAvery22,Tue Oct 27 03:57:30 2026 +1100,Group control keys into brightness, wave and echo with live values,New controlGroups list and buildControlGroup function put related control keys together: darker and brighter under brightness, wave on its own, less and more echo under echo. updateDisplay writes each group's current setting underneath, so brightness shows the filter cutoff in hz, echo shows a percentage, and wave shows the name of the current wave shape.
+
+
+TommyAvery22,Tue Oct 27 03:27:42 2026 +1100,Add ring and wobble influence meters above the keyboard,New buildMeter function creates a meter for each player, drawn in their partner's colour. Player 1's "ring" meter shows how metallic player 2 is making their sound; player 2's "wobble" meter shows how fast player 1 is making their sound wobble. The meters sit above the keyboard and start empty (pure / still) until they're connected to the sound.
+
+
+TommyAvery22,Tue Oct 27 02:51:48 2026 +1100,main.js,matched the trail length to each player's echo
+
+
+TommyAvery22,Tue Oct 27 02:49:16 2026 +1100,updated styling for the keyboard,switched to a mono font, styled the keys and separated the controls.
+
+gave each control key a symbol with its name underneath
+
+
+TommyAvery22,Tue Oct 27 02:39:34 2026 +1100,add style.css,faded keys out slowly after they're let go
+
+
+TommyAvery22,Tue Oct 27 02:33:52 2026 +1100,removed mp3 file,
+TommyAvery22,Tue Oct 27 02:31:49 2026 +1100,removed subtitle,
+TommyAvery22,Tue Oct 27 02:12:43 2026 +1100,Merge branch 'final-instrument' of https://github.com/TommyAvery22/audioinstrument into final-instrument,
+TommyAvery22,Tue Oct 27 02:10:48 2026 +1100,Removed subheading,
+TommyAvery22,Tue Oct 27 00:11:01 2026 +1100,create commit history,
+TommyAvery22,Tue Oct 27 00:11:01 2026 +1100,create commit history,
 TommyAvery22,Tue Oct 6 08:43:18 2026 +1100,fixed bug that stopped the cross-effects from working,moved the cross-mod lists out of the forEach so startNote can see them
+
+TommyAvery22,Tue Oct 6 08:43:18 2026 +1100,fixed bug that stopped the cross-effects from working,moved the cross-mod lists out of the forEach so startNote can see them
+
+TommyAvery22,Tue Oct 6 08:36:05 2026 +1100,Player 1's notes make player 2's wobble,made player 1's notes wobble player 2's filter
 
 TommyAvery22,Tue Oct 6 08:36:05 2026 +1100,Player 1's notes make player 2's wobble,made player 1's notes wobble player 2's filter
 
 TommyAvery22,Tue Oct 6 08:02:14 2026 +1100,made player 2 notes make player 1's sound different,made player 2's notes change player 1's frequency modulation
 
+TommyAvery22,Tue Oct 6 08:02:14 2026 +1100,made player 2 notes make player 1's sound different,made player 2's notes change player 1's frequency modulation
+
+TommyAvery22,Tue Oct 6 07:50:33 2026 +1100,made player 1 an fm synth,
 TommyAvery22,Tue Oct 6 07:50:33 2026 +1100,made player 1 an fm synth,
 TommyAvery22,Tue Oct 6 07:43:37 2026 +1100,started conflict prototype from the keyboard split display,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+TommyAvery22,Tue Oct 6 07:43:37 2026 +1100,started conflict prototype from the keyboard split display,
+TommyAvery22,Tue Oct 6 05:45:00 2026 +1100,Update the status as players play,showed each player's notes and sound settings
 
 TommyAvery22,Tue Oct 6 05:45:00 2026 +1100,Update the status as players play,showed each player's notes and sound settings
 
 TommyAvery22,Tue Oct 6 05:41:46 2026 +1100,show each player's status on screen,added a coloured section for each player. changed player 1's colour
 
+TommyAvery22,Tue Oct 6 05:41:46 2026 +1100,show each player's status on screen,added a coloured section for each player. changed player 1's colour
+
 TommyAvery22,Tue Oct 6 05:27:23 2026 +1100,make bottom row keys change the sound characteristics,made the bottom row change filter, wave and echo
+
+TommyAvery22,Tue Oct 6 05:27:23 2026 +1100,make bottom row keys change the sound characteristics,made the bottom row change filter, wave and echo
+
+TommyAvery22,Tue Oct 6 05:23:28 2026 +1100,added filter, echo, and shared reverb,added a filter and echo per player and a shared reverb
 
 TommyAvery22,Tue Oct 6 05:23:28 2026 +1100,added filter, echo, and shared reverb,added a filter and echo per player and a shared reverb
 
 TommyAvery22,Tue Oct 6 05:17:45 2026 +1100,added a synth for each player,gave each player a synth and played notes from the keyboard
 
+TommyAvery22,Tue Oct 6 05:17:45 2026 +1100,added a synth for each player,gave each player a synth and played notes from the keyboard
+
 TommyAvery22,Tue Oct 6 05:11:07 2026 +1100,starts the audio when the dialog closes,started tone when the intro dialog closes
+
+TommyAvery22,Tue Oct 6 05:11:07 2026 +1100,starts the audio when the dialog closes,started tone when the intro dialog closes
+
+TommyAvery22,Tue Oct 6 05:05:04 2026 +1100,track which keys each player is holding,tracked which note keys each player is holding
 
 TommyAvery22,Tue Oct 6 05:05:04 2026 +1100,track which keys each player is holding,tracked which note keys each player is holding
 
 TommyAvery22,Tue Oct 6 05:00:42 2026 +1100,respond to key inputs,logged which player pressed each key
 
+TommyAvery22,Tue Oct 6 05:00:42 2026 +1100,respond to key inputs,logged which player pressed each key
+
 TommyAvery22,Tue Oct 6 04:56:14 2026 +1100,fixed missing brackets,fixed missing brackets between player 1 and 2
+
+TommyAvery22,Tue Oct 6 04:56:14 2026 +1100,fixed missing brackets,fixed missing brackets between player 1 and 2
+
+TommyAvery22,Tue Oct 6 04:52:33 2026 +1100,Turned key codes into readable labels,added keyLabel to show keys as they're printed
 
 TommyAvery22,Tue Oct 6 04:52:33 2026 +1100,Turned key codes into readable labels,added keyLabel to show keys as they're printed
 
 TommyAvery22,Tue Oct 6 04:49:36 2026 +1100,added findKey function,added findKey to look up which player owns a key
 
+TommyAvery22,Tue Oct 6 04:49:36 2026 +1100,added findKey function,added findKey to look up which player owns a key
+
+TommyAvery22,Tue Oct 6 04:36:22 2026 +1100,added player 2's keys,added player 2 on the right side, who will play octave higher
+
 TommyAvery22,Tue Oct 6 04:36:22 2026 +1100,added player 2's keys,added player 2 on the right side, who will play octave higher
 
 TommyAvery22,Tue Oct 6 04:34:09 2026 +1100,added player 1's note and control keys,
+TommyAvery22,Tue Oct 6 04:34:09 2026 +1100,added player 1's note and control keys,
 TommyAvery22,Tue Oct 6 04:32:22 2026 +1100,altered main.js,removed class test code, kept the intro dialog
+
+TommyAvery22,Tue Oct 6 04:32:22 2026 +1100,altered main.js,removed class test code, kept the intro dialog
+
+TommyAvery22,Mon Oct 5 23:27:32 2026 +1100,assigned colours to each player,Linked each player (player 1 & 2) to their respective colours. Also updated fonts
 
 TommyAvery22,Mon Oct 5 23:27:32 2026 +1100,assigned colours to each player,Linked each player (player 1 & 2) to their respective colours. Also updated fonts
 
 TommyAvery22,Mon Oct 5 23:13:58 2026 +1100,Added player colours and updated colours in root,Ensured that each player is represented by a distinct colour
 
+TommyAvery22,Mon Oct 5 23:13:58 2026 +1100,Added player colours and updated colours in root,Ensured that each player is represented by a distinct colour
+
 TommyAvery22,Mon Oct 5 22:17:41 2026 +1100,pinned tone version and allowed zooming,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
+TommyAvery22,Mon Oct 5 22:17:41 2026 +1100,pinned tone version and allowed zooming,
 TommyAvery22,Mon Oct 5 22:17:41 2026 +1100,replaced test controls with an empty stage for the display,Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
+TommyAvery22,Mon Oct 5 22:17:41 2026 +1100,replaced test controls with an empty stage for the display,
 TommyAvery22,Mon Oct 5 22:05:59 2026 +1100,Updated intro dialogue message,Changed the message to quickly explain the synth and its mapping
 
 TommyAvery22,Mon Oct 5 20:47:02 2026 +1100,fixed timezone,
